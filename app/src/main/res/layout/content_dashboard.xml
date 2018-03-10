@@ -51,20 +51,22 @@
         app:tabIndicatorHeight="@dimen/dp0"
         app:tabMode="fixed" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:layout_above="@+id/ll_bottom"
+        android:layout_marginTop="@dimen/dp10"
+        android:background="@color/view_color" />
+
     <LinearLayout
         android:id="@+id/ll_bottom"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/dp10"
         android:background="@color/white"
         android:orientation="horizontal"
         android:weightSum="5">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp1"
-            android:background="@color/view_color" />
 
         <RelativeLayout
             android:id="@+id/rl_home"

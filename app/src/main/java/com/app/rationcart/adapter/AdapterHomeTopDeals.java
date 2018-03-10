@@ -43,7 +43,7 @@ public class AdapterHomeTopDeals extends RecyclerView.Adapter<RecyclerView.ViewH
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(
-                    R.layout.row_home_category, parent, false);
+                    R.layout.row_home_top_deals, parent, false);
 
             vh = new CustomViewHolder(v);
         } else {

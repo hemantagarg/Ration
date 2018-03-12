@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff">
+
+
+    <TextView
+        android:id="@+id/text_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/dp10"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp5"
+
+        android:text="fdxfdcgx"
+        android:textColor="@color/textcolordark"
+        android:textSize="@dimen/text_size_14" />
+
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/dp10"
+        android:layout_toLeftOf="@+id/specialprice"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/textcolordark" />
+
+
+    <TextView
+        android:id="@+id/specialprice"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/dp10"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/textcolordark" />
+
+
+</RelativeLayout>

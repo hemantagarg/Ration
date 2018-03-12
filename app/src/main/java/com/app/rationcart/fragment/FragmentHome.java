@@ -23,6 +23,7 @@ import com.app.rationcart.adapter.AdapterHomeTopDeals;
 import com.app.rationcart.adapter.CustomPagerAdapter;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
 import com.app.rationcart.models.ModelHomeData;
+import com.app.rationcart.utils.AppConstant;
 import com.app.rationcart.utils.AppUtils;
 
 import org.json.JSONArray;
@@ -207,7 +208,14 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
 
     @Override
     public void onItemClickListener(int position, int flag) {
+        if (flag == 2) {
 
+            FragmentProductsAccToCategory fragment = new FragmentProductsAccToCategory();
+            Bundle bundle = new Bundle();
+            bundle.putString("id", mCategoriesList.get(position).getCategoryId());
+            fragment.setArguments(bundle);
+            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
+        }
     }
 
     private void pagerMove() {

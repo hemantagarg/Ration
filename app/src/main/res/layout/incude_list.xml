@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_bottom"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentBottom="true"
+    android:background="#55555555"
+    android:visibility="gone">
+
+    <RelativeLayout
+        android:id="@+id/rl_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/dp30"
+        android:layout_marginRight="@dimen/dp30">
+
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/red"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp5"
+            android:text="Select Pack Size"
+            android:textColor="#ffffff"
+            android:textSize="@dimen/text_size_14"
+
+            />
+
+        <ListView
+            android:id="@+id/spinner_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text"
+            android:background="#ffffff"
+            android:divider="@color/view_color"
+            android:dividerHeight="1dp"
+            android:scrollbars="none" />
+    </RelativeLayout>
+
+</RelativeLayout>
+

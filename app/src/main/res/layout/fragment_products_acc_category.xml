@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_color"
+    android:clickable="true"
+    tools:context="com.app.rationcart.fragment.FragmentHome">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/header_layout" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_subcategories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_products"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp10"
+                android:visibility="visible" />
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <include layout="@layout/incude_list" />
+</RelativeLayout>

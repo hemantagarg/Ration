@@ -13,5 +13,6 @@ public interface JsonApiHelper {
     String LOGIN = "sflogin";
     String FORGOT = "forgetPassword";
     String CATEGORIES = "category.php?";
+    String CATEGORY_PRODUCT = "categoryproduct.php?";
 
 }

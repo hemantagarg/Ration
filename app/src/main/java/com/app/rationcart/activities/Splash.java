@@ -29,8 +29,7 @@ public class Splash extends AppCompatActivity implements ApiResponse {
     private Context context;
     private int PERMISSION_ALL = 1;
     private String[] PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.CAMERA,
-    };
+            Manifest.permission.ACCESS_NETWORK_STATE};
     String latitude = "0.0", longitude = "0.0";
 
     @Override

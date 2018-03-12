@@ -8,6 +8,7 @@
     <color name="button_bg_color">#5458DF</color>
     <color name="blue_color">#337ab7</color>
     <color name="view_color">#80979797</color>
+    <color name="grey_color">#f7f6f2</color>
     <color name="stats">#cecece</color>
     <color name="text_selected_bg">#f4f4f4</color>
     <color name="layout_bg">#f6f7fb</color>

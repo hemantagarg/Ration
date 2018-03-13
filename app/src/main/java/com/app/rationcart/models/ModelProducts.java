@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class ModelProducts {
 
-    private String product_cart_count;
+    private int product_cart_count;
 
     private String unitType;
 
@@ -65,15 +65,6 @@ public class ModelProducts {
 
     public void setSetCustomOption(ArrayList<HashMap<String, String>> setCustomOption) {
         this.setCustomOption = setCustomOption;
-    }
-
-
-    public String getProduct_cart_count() {
-        return product_cart_count;
-    }
-
-    public void setProduct_cart_count(String product_cart_count) {
-        this.product_cart_count = product_cart_count;
     }
 
     public String getUnitType() {
@@ -138,5 +129,13 @@ public class ModelProducts {
 
     public void setRowType(int rowType) {
         this.rowType = rowType;
+    }
+
+    public int getProduct_cart_count() {
+        return product_cart_count;
+    }
+
+    public void setProduct_cart_count(int product_cart_count) {
+        this.product_cart_count = product_cart_count;
     }
 }

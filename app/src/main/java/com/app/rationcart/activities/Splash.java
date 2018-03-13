@@ -1,6 +1,5 @@
 package com.app.rationcart.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -28,8 +27,7 @@ public class Splash extends AppCompatActivity implements ApiResponse {
 
     private Context context;
     private int PERMISSION_ALL = 1;
-    private String[] PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_NETWORK_STATE};
+    private String[] PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION,};
     String latitude = "0.0", longitude = "0.0";
 
     @Override

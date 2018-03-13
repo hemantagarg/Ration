@@ -14,5 +14,7 @@ public interface JsonApiHelper {
     String FORGOT = "forgetPassword";
     String CATEGORIES = "category.php?";
     String CATEGORY_PRODUCT = "categoryproduct.php?";
+    String SUBCATEGORY_PRODUCT = "subcategoryproduct.php?";
+    String ADD_PRODUCT = "product_cart_count.php?";
 
 }

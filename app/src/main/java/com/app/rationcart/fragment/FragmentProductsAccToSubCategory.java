@@ -27,7 +27,6 @@ import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
 import com.app.rationcart.models.ModelHomeData;
 import com.app.rationcart.models.ModelProducts;
-import com.app.rationcart.utils.AppConstant;
 import com.app.rationcart.utils.AppUtils;
 
 import org.json.JSONArray;
@@ -37,25 +36,25 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentProductsAccToCategory extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
+public class FragmentProductsAccToSubCategory extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
 
-    public static FragmentProductsAccToCategory fragmentHome;
+    public static FragmentProductsAccToSubCategory fragmentHome;
     private Activity context;
     private ArrayList<ModelHomeData> mSubCategoriesList = new ArrayList<>();
     private ArrayList<ModelProducts> mProductsList = new ArrayList<>();
     private RecyclerView listSubcategories, listProducts;
     private View view;
-    private String TAG = FragmentProductsAccToCategory.class.getSimpleName();
+    private String TAG = FragmentProductsAccToSubCategory.class.getSimpleName();
     private String categoryId = "";
     private int selectedPosition = 0;
     private AdapterCustomList adapterlist;
     private ListView list_weight;
     private RelativeLayout rl_bottom;
-    AdapterProductsList adapterProductsList;
+    private AdapterProductsList adapterProductsList;
 
-    public static FragmentProductsAccToCategory getInstance() {
+    public static FragmentProductsAccToSubCategory getInstance() {
         if (fragmentHome == null)
-            fragmentHome = new FragmentProductsAccToCategory();
+            fragmentHome = new FragmentProductsAccToSubCategory();
         return fragmentHome;
     }
 
@@ -142,7 +141,7 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
             if (AppUtils.isNetworkAvailable(context)) {
 
                 // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.CATEGORY_PRODUCT + "cat_id=" + categoryId;
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBCATEGORY_PRODUCT + "subcat_id=" + categoryId;
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -152,16 +151,13 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
         }
     }
 
-    private void addProducts(int count, String id, boolean isAdd) {
+    private void addProducts() {
         try {
             if (AppUtils.isNetworkAvailable(context)) {
-                int methodType = 2;
-                if (isAdd) {
-                    methodType = 3;
-                }
-                // http://stackmindz.com/dev/rationcart/api/product_cart_count?product_id=12&product_count=1&token=123456789
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=";
-                new CommonAsyncTaskHashmap(methodType, context, this).getqueryJsonbject(url, null, Request.Method.GET);
+
+                // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBCATEGORY_PRODUCT + "subcat_id=" + categoryId;
+                new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
             }
@@ -171,120 +167,22 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
     }
 
 
-    private void initViews(View view) {
-        listSubcategories = view.findViewById(R.id.list_subcategories);
-        listProducts = view.findViewById(R.id.list_products);
-        list_weight = (ListView) view.findViewById(R.id.spinner_list);
-        rl_bottom = (RelativeLayout) view.findViewById(R.id.rl_bottom);
-        listSubcategories.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        listProducts.setLayoutManager(new LinearLayoutManager(context));
-        listProducts.setNestedScrollingEnabled(false);
-    }
-
-    @Override
-    public void onItemClickListener(int position, int flag) {
-        selectedPosition = position;
-        if (flag == 511) {
-            int pos = mProductsList.get(selectedPosition).getCustomPosition();
-
-            ArrayList<HashMap<String, String>> arrayList = mProductsList.get(position).getSetCustomOption();
-            ArrayList<String> list = new ArrayList<>();
-            ArrayList<String> price = new ArrayList<>();
-            ArrayList<String> sprice = new ArrayList<>();
-
-            for (int i = 0; i < arrayList.size(); i++) {
-                list.add(arrayList.get(i).get("unitprice"));
-                sprice.add(arrayList.get(i).get("unit"));
-                price.add(arrayList.get(i).get("price"));
-            }
-            adapterlist = new AdapterCustomList(context, this, list, price, sprice, pos);
-            list_weight.setAdapter(adapterlist);
-            rl_bottom.setVisibility(View.VISIBLE);
-        } else if (flag == 11) {
-            mProductsList.get(selectedPosition).setCustomPosition(position);
-            Log.e(" po", "****" + position);
-            Log.e(" pro", "****" + mProductsList.get(selectedPosition).getCustomPosition());
-            adapterProductsList.notifyDataSetChanged();
-            rl_bottom.setVisibility(View.GONE);
-        } else if (flag == 21) {
-            FragmentProductsAccToSubCategory fragment = new FragmentProductsAccToSubCategory();
-            Bundle bundle = new Bundle();
-            bundle.putString("id", mSubCategoriesList.get(position).getSubCategoryId());
-            fragment.setArguments(bundle);
-            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
-
-        } else if (flag == 2) {
-            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
-            count++;
-            mProductsList.get(selectedPosition).setProduct_cart_count(count);
-            adapterProductsList.notifyDataSetChanged();
-            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true);
-
-        } else if (flag == 3) {
-            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
-            if (count >= 1) {
-                count--;
-                mProductsList.get(selectedPosition).setProduct_cart_count(count);
-                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false);
-                adapterProductsList.notifyDataSetChanged();
-            }
-        }
-    }
-
-
-    @Override
-    public void onPostSuccess(int method, JSONObject response) {
-        try {
-            if (method == 1) {
-                JSONObject commandResult = response.getJSONObject("commandResult");
-                if (commandResult.getString("success").equalsIgnoreCase("1")) {
-                    JSONObject data = commandResult.getJSONObject("data");
-                    setData(data);
-
-                }
-            } else if (method == 2) {
-                JSONObject commandResult = response.getJSONObject("commandResult");
-                if (commandResult.getString("success").equalsIgnoreCase("1")) {
-
-                } else {
-                    int count = mProductsList.get(selectedPosition).getProduct_cart_count();
-                    count++;
-                    mProductsList.get(selectedPosition).setProduct_cart_count(count);
-                    adapterProductsList.notifyDataSetChanged();
-                }
-            } else if (method == 3) {
-                JSONObject commandResult = response.getJSONObject("commandResult");
-                if (commandResult.getString("success").equalsIgnoreCase("1")) {
-
-                } else {
-                    int count = mProductsList.get(selectedPosition).getProduct_cart_count();
-                    count--;
-                    mProductsList.get(selectedPosition).setProduct_cart_count(count);
-                    adapterProductsList.notifyDataSetChanged();
-
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     private void setData(JSONObject data) {
         try {
-
-            JSONArray categories = data.getJSONArray("subcategories");
-            for (int i = 0; i < categories.length(); i++) {
-                JSONObject jo = categories.getJSONObject(i);
-                ModelHomeData modelHomeData = new ModelHomeData();
-                modelHomeData.setSubCategoryId(jo.getString("SubCategoryId"));
-                modelHomeData.setSubCategoryImage(jo.getString("SubCategoryImage"));
-                modelHomeData.setSubCategoryName(jo.getString("SubCategoryName"));
-                mSubCategoriesList.add(modelHomeData);
+            if (data.has("subcategories")) {
+                JSONArray categories = data.getJSONArray("subcategories");
+                for (int i = 0; i < categories.length(); i++) {
+                    JSONObject jo = categories.getJSONObject(i);
+                    ModelHomeData modelHomeData = new ModelHomeData();
+                    modelHomeData.setSubCategoryId(jo.getString("SubCategoryId"));
+                    modelHomeData.setSubCategoryImage(jo.getString("SubCategoryImage"));
+                    modelHomeData.setSubCategoryName(jo.getString("SubCategoryName"));
+                    mSubCategoriesList.add(modelHomeData);
+                }
+                AdapterSubcategoriesNames adapterHomeCategories = new AdapterSubcategoriesNames(context, this, mSubCategoriesList);
+                listSubcategories.setAdapter(adapterHomeCategories);
             }
-            AdapterSubcategoriesNames adapterHomeCategories = new AdapterSubcategoriesNames(context, this, mSubCategoriesList);
-            listSubcategories.setAdapter(adapterHomeCategories);
-
             JSONArray product = data.getJSONArray("product");
             for (int i = 0; i < product.length(); i++) {
                 JSONObject jo = product.getJSONObject(i);
@@ -333,6 +231,74 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
             listProducts.setAdapter(adapterProductsList);
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void initViews(View view) {
+        listSubcategories = view.findViewById(R.id.list_subcategories);
+        listProducts = view.findViewById(R.id.list_products);
+        list_weight = (ListView) view.findViewById(R.id.spinner_list);
+        rl_bottom = (RelativeLayout) view.findViewById(R.id.rl_bottom);
+        listSubcategories.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        listProducts.setLayoutManager(new LinearLayoutManager(context));
+        listProducts.setNestedScrollingEnabled(false);
+    }
+
+    @Override
+    public void onItemClickListener(int position, int flag) {
+        selectedPosition = position;
+        if (flag == 511) {
+            int pos = mProductsList.get(selectedPosition).getCustomPosition();
+
+            ArrayList<HashMap<String, String>> arrayList = mProductsList.get(position).getSetCustomOption();
+            ArrayList<String> list = new ArrayList<>();
+            ArrayList<String> price = new ArrayList<>();
+            ArrayList<String> sprice = new ArrayList<>();
+
+            for (int i = 0; i < arrayList.size(); i++) {
+                list.add(arrayList.get(i).get("unitprice"));
+                sprice.add(arrayList.get(i).get("unit"));
+                price.add(arrayList.get(i).get("price"));
+            }
+            adapterlist = new AdapterCustomList(context, this, list, price, sprice, pos);
+            list_weight.setAdapter(adapterlist);
+            rl_bottom.setVisibility(View.VISIBLE);
+        } else if (flag == 11) {
+            mProductsList.get(selectedPosition).setCustomPosition(position);
+            Log.e(" po", "****" + position);
+            Log.e(" pro", "****" + mProductsList.get(selectedPosition).getCustomPosition());
+            adapterProductsList.notifyDataSetChanged();
+            rl_bottom.setVisibility(View.GONE);
+        } else if (flag == 2) {
+            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
+            count++;
+            mProductsList.get(selectedPosition).setProduct_cart_count(count);
+            adapterProductsList.notifyDataSetChanged();
+        } else if (flag == 3) {
+            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
+            if (count > 1) {
+                count--;
+                mProductsList.get(selectedPosition).setProduct_cart_count(count);
+                adapterProductsList.notifyDataSetChanged();
+            }
+        }
+    }
+
+
+    @Override
+    public void onPostSuccess(int method, JSONObject response) {
+        try {
+            if (method == 1) {
+                JSONObject commandResult = response.getJSONObject("commandResult");
+                if (commandResult.getString("success").equalsIgnoreCase("1")) {
+                    JSONObject data = commandResult.getJSONObject("data");
+                    setData(data);
+
+                }
+            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 

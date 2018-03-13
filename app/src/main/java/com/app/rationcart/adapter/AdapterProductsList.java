@@ -80,7 +80,7 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
             ((CustomViewHolder) holder).product_name.setText(detail.get(position).getProductName());
             ((CustomViewHolder) holder).product_price.setText(detail.get(position).getProductPrice());
 
-            ((CustomViewHolder) holder).text_price.setText(detail.get(position).getProductPrice() + "");
+            ((CustomViewHolder) holder).text_price.setText(detail.get(position).getProduct_cart_count() + "");
 
             if (detail.get(position).isCustomoption()) {
                 ((CustomViewHolder) holder).spinner_item.setBackgroundResource(R.drawable.list_bg);
@@ -100,7 +100,7 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
 
             ((CustomViewHolder) holder).spiner.setAdapter(product_adapter);
             ((CustomViewHolder) holder).spiner.setSelection(detail.get(position).getSp_position());
-            ((CustomViewHolder) holder).spinner_item.setText(hm.get("unit"));
+            ((CustomViewHolder) holder).spinner_item.setText(hm.get("unitprice"));
 
             ((CustomViewHolder) holder).spiner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -109,7 +109,6 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
                     ((CustomViewHolder) holder).spinner_item.setText(((CustomViewHolder) holder).spiner.getSelectedItem().toString());
 
                     detail.get(position).setSp_position(pos);
-
                 }
 
                 @Override
@@ -121,16 +120,25 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
             ((CustomViewHolder) holder).spinner_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if (detail.get(position).isCustomoption()) {
                         listener.onItemClickListener(position, 511);
                     }
-
-
                 }
             });
 
+            ((CustomViewHolder) holder).add_price.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClickListener(position, 2);
 
+                }
+            });
+            ((CustomViewHolder) holder).sub_price.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClickListener(position, 3);
+                }
+            });
         } else {
             ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
         }
@@ -144,7 +152,7 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView product_name, product_type, product_price, text_price, spinner_item;
+        TextView product_name, product_price, text_price, spinner_item;
         ImageView add_price, sub_price, item_image;
         Spinner spiner;
 
@@ -152,9 +160,8 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
             super(view);
             view.setOnClickListener(this);
             this.product_name = (TextView) view
-                    .findViewById(R.id.teaName);
+                    .findViewById(R.id.productName);
             this.item_image = (ImageView) view.findViewById(R.id.image_product);
-            this.product_type = (TextView) view.findViewById(R.id.teaType);
             this.product_price = (TextView) view
                     .findViewById(R.id.price);
             this.spinner_item = (TextView) view.findViewById(R.id.spinner_text);

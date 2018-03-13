@@ -98,7 +98,7 @@ public class AdapterSubcategoriesNames extends RecyclerView.Adapter<RecyclerView
 
         @Override
         public void onClick(View v) {
-            listener.onItemClickListener(getPosition(), 2);
+            listener.onItemClickListener(getPosition(), 21);
         }
 
     }

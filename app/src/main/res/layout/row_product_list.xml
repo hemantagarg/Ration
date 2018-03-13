@@ -20,7 +20,6 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp10"
-            android:scaleType="fitXY"
             android:src="@drawable/placeholder" />
 
         <RelativeLayout
@@ -41,31 +40,23 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/teaName"
+                    android:id="@+id/productName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:maxLines="2"
                     android:text="1"
                     android:textColor="@color/red"
-                    android:textSize="@dimen/text_size_18" />
+                    android:textSize="@dimen/text_size_14" />
 
-                <TextView
-                    android:id="@+id/teaType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/teaName"
-                    android:layout_gravity="center_horizontal"
-                    android:text=""
-                    android:textColor="@color/textcolordark"
-                    android:textSize="@dimen/text_size_16" />
 
                 <TextView
                     android:id="@+id/spinner_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/teaType"
+                    android:layout_below="@+id/productName"
                     android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/list_bg"
                     android:paddingBottom="3dp"
                     android:paddingLeft="5dp"
@@ -74,13 +65,13 @@
                     android:singleLine="true"
                     android:text=""
                     android:textColor="@color/textcolordark"
-                    android:textSize="@dimen/text_size_16" />
+                    android:textSize="@dimen/text_size_13" />
 
                 <Spinner
                     android:id="@+id/spinner1"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_below="@+id/teaType"
+                    android:layout_below="@+id/productName"
                     android:clickable="true"
                     android:padding="@dimen/dp3"
                     android:textSize="@dimen/text_size_12"
@@ -92,10 +83,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/spinner_text"
                     android:layout_centerVertical="true"
+                    android:layout_marginTop="@dimen/dp3"
                     android:drawableLeft="@drawable/rs"
                     android:text=""
                     android:textColor="@color/textcolordark"
-                    android:textSize="@dimen/text_size_16" />
+                    android:textSize="@dimen/text_size_13" />
 
 
                 <TextView
@@ -105,11 +97,12 @@
                     android:layout_below="@+id/spinner_text"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/dp5"
+                    android:layout_marginTop="@dimen/dp3"
                     android:layout_toRightOf="@+id/price"
                     android:drawableLeft="@drawable/rs"
                     android:text="0"
                     android:textColor="@color/red"
-                    android:textSize="@dimen/text_size_16"
+                    android:textSize="@dimen/text_size_13"
                     android:visibility="gone" />
 
             </RelativeLayout>
@@ -144,7 +137,7 @@
                         android:layout_toRightOf="@+id/subtract"
                         android:text="0"
                         android:textColor="@color/blue_color"
-                        android:textSize="@dimen/text_size_17" />
+                        android:textSize="@dimen/text_size_15" />
 
                     <ImageView
                         android:id="@+id/add"
@@ -153,7 +146,6 @@
                         android:layout_toRightOf="@+id/text_price"
                         android:padding="@dimen/dp10"
                         android:src="@drawable/add" />
-
 
                 </RelativeLayout>
 

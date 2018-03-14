@@ -13,7 +13,7 @@ public class ModelProducts {
 
     private String unitType;
 
-    private String discount_value;
+    private String discount_value,productDiscountPrice;
 
     private String image;
 
@@ -137,5 +137,13 @@ public class ModelProducts {
 
     public void setProduct_cart_count(int product_cart_count) {
         this.product_cart_count = product_cart_count;
+    }
+
+    public String getProductDiscountPrice() {
+        return productDiscountPrice;
+    }
+
+    public void setProductDiscountPrice(String productDiscountPrice) {
+        this.productDiscountPrice = productDiscountPrice;
     }
 }

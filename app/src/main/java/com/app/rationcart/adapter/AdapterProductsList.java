@@ -4,14 +4,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.app.rationcart.R;
@@ -88,8 +89,6 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
                 ((CustomViewHolder) holder).spinner_item.setBackgroundColor(Color.argb(28, 204, 204, 204));
             }
 
-            HashMap<String, String> hm = detail.get(position).getSetCustomOption().get(detail.get(position).getCustomPosition());
-
             try {
                 Picasso.with(mContext).load(detail.get(position).getImage())
                         //    .placeholder(R.drawable.placeholder)
@@ -97,25 +96,21 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            HashMap<String, String> hm = detail.get(position).getSetCustomOption().get(detail.get(position).getCustomPosition());
+            if (!hm.get("dis_price").equalsIgnoreCase("") && !hm.get("dis_price").equalsIgnoreCase("0") && !hm.get("dis_price").equalsIgnoreCase("0.00")) {
 
-            ((CustomViewHolder) holder).spiner.setAdapter(product_adapter);
-            ((CustomViewHolder) holder).spiner.setSelection(detail.get(position).getSp_position());
+                String dataspan = hm.get("price");
+                Spannable wordtoSpan = new SpannableString(dataspan);
+
+                wordtoSpan.setSpan(new StrikethroughSpan(), 0, wordtoSpan.length(), 0);
+                ((CustomViewHolder) holder).specialprice.setVisibility(View.VISIBLE);
+                ((CustomViewHolder) holder).product_price.setText(wordtoSpan);
+                ((CustomViewHolder) holder).specialprice.setText(hm.get("dis_price"));
+            } else {
+                ((CustomViewHolder) holder).product_price.setText(hm.get("price"));
+                ((CustomViewHolder) holder).specialprice.setVisibility(View.GONE);
+            }
             ((CustomViewHolder) holder).spinner_item.setText(hm.get("unitprice"));
-
-            ((CustomViewHolder) holder).spiner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
-                    ((CustomViewHolder) holder).spinner_item.setText(((CustomViewHolder) holder).spiner.getSelectedItem().toString());
-
-                    detail.get(position).setSp_position(pos);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-            });
 
             ((CustomViewHolder) holder).spinner_item.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -152,9 +147,8 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView product_name, product_price, text_price, spinner_item;
+        TextView product_name, product_price, text_price, spinner_item, specialprice;
         ImageView add_price, sub_price, item_image;
-        Spinner spiner;
 
         public CustomViewHolder(View view) {
             super(view);
@@ -165,15 +159,15 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
             this.product_price = (TextView) view
                     .findViewById(R.id.price);
             this.spinner_item = (TextView) view.findViewById(R.id.spinner_text);
+            this.specialprice = (TextView) view.findViewById(R.id.specialprice);
             this.text_price = (TextView) view.findViewById(R.id.text_price);
             this.add_price = (ImageView) view.findViewById(R.id.add);
             this.sub_price = (ImageView) view.findViewById(R.id.subtract);
-            this.spiner = (Spinner) view.findViewById(R.id.spinner1);
         }
 
         @Override
         public void onClick(View v) {
-            listener.onItemClickListener(getPosition(), 2);
+            listener.onItemClickListener(getPosition(), 22);
         }
 
     }

@@ -1,13 +1,16 @@
 package com.app.rationcart.activities;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -27,7 +30,8 @@ public class Splash extends AppCompatActivity implements ApiResponse {
 
     private Context context;
     private int PERMISSION_ALL = 1;
-    private String[] PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION,};
+    private String[] PERMISSIONS = {android.Manifest.permission.ACCESS_FINE_LOCATION,
+            android.Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_PHONE_STATE};
     String latitude = "0.0", longitude = "0.0";
 
     @Override
@@ -56,17 +60,30 @@ public class Splash extends AppCompatActivity implements ApiResponse {
         }
     }
 
-    public static boolean hasPermissions(Context context, String... permissions) {
+    public boolean hasPermissions(Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                     return false;
                 }
             }
+        }else {
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            AppUtils.setImeiNo(context, telephonyManager.getDeviceId());
         }
         return true;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_ALL) {
+            if (grantResults.length > 0 && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                AppUtils.setImeiNo(context, telephonyManager.getDeviceId());
+            }
+        }
+    }
 
     private void getHomeData() {
         try {

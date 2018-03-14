@@ -18,16 +18,13 @@ import com.app.rationcart.R;
 import com.app.rationcart.activities.DashboardActivity;
 import com.app.rationcart.adapter.AdapterCustomList;
 import com.app.rationcart.adapter.AdapterProductsList;
-import com.app.rationcart.adapter.AdapterSubcategoriesNames;
 import com.app.rationcart.aynctask.CommonAsyncTaskHashmap;
 import com.app.rationcart.iclasses.HeaderViewManager;
 import com.app.rationcart.interfaces.ApiResponse;
 import com.app.rationcart.interfaces.HeaderViewClickListener;
 import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
-import com.app.rationcart.models.ModelHomeData;
 import com.app.rationcart.models.ModelProducts;
-import com.app.rationcart.utils.AppConstant;
 import com.app.rationcart.utils.AppUtils;
 
 import org.json.JSONArray;
@@ -41,9 +38,8 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
 
     public static FragmentProductsDetail fragmentHome;
     private Activity context;
-    private ArrayList<ModelHomeData> mSubCategoriesList = new ArrayList<>();
     private ArrayList<ModelProducts> mProductsList = new ArrayList<>();
-    private RecyclerView listSubcategories, listProducts;
+    private RecyclerView listProducts;
     private View view;
     private String TAG = FragmentProductsDetail.class.getSimpleName();
     private String categoryId = "";
@@ -81,7 +77,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
         initViews(view);
         getBundle();
         manageHeaderView();
-        getProducts();
+        getProductDetail();
         setListener();
     }
 
@@ -94,7 +90,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
     private void manageHeaderView() {
 
         HeaderViewManager.getInstance().InitializeHeaderView(null, view, manageHeaderClick());
-        HeaderViewManager.getInstance().setHeading(true, "Products");
+        HeaderViewManager.getInstance().setHeading(true, "Product Detail");
         HeaderViewManager.getInstance().setLeftSideHeaderView(true, R.drawable.left_arrow);
         HeaderViewManager.getInstance().setRightSideHeaderView(false, R.drawable.search);
         HeaderViewManager.getInstance().setLogoView(false);
@@ -137,12 +133,12 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
         });
     }
 
-    private void getProducts() {
+    private void getProductDetail() {
         try {
             if (AppUtils.isNetworkAvailable(context)) {
 
                 // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.CATEGORY_PRODUCT + "cat_id=" + categoryId;
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.PRODUCT_DETAIL + "product_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context);
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -152,7 +148,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
         }
     }
 
-    private void addProducts(int count, String id, boolean isAdd) {
+    private void addProducts(int count, String id, boolean isAdd, String unitId) {
         try {
             if (AppUtils.isNetworkAvailable(context)) {
                 int methodType = 2;
@@ -160,7 +156,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
                     methodType = 3;
                 }
                 // http://stackmindz.com/dev/rationcart/api/product_cart_count?product_id=12&product_count=1&token=123456789
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=";
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=" + AppUtils.getImeiNo(context) + "&unit_id=" + unitId;
                 new CommonAsyncTaskHashmap(methodType, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -172,19 +168,17 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
 
 
     private void initViews(View view) {
-        listSubcategories = view.findViewById(R.id.list_subcategories);
         listProducts = view.findViewById(R.id.list_products);
         list_weight = (ListView) view.findViewById(R.id.spinner_list);
         rl_bottom = (RelativeLayout) view.findViewById(R.id.rl_bottom);
-        listSubcategories.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         listProducts.setLayoutManager(new LinearLayoutManager(context));
         listProducts.setNestedScrollingEnabled(false);
     }
 
     @Override
     public void onItemClickListener(int position, int flag) {
-        selectedPosition = position;
         if (flag == 511) {
+            selectedPosition = position;
             int pos = mProductsList.get(selectedPosition).getCustomPosition();
 
             ArrayList<HashMap<String, String>> arrayList = mProductsList.get(position).getSetCustomOption();
@@ -194,7 +188,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
 
             for (int i = 0; i < arrayList.size(); i++) {
                 list.add(arrayList.get(i).get("unitprice"));
-                sprice.add(arrayList.get(i).get("unit"));
+                sprice.add(arrayList.get(i).get("dis_price"));
                 price.add(arrayList.get(i).get("price"));
             }
             adapterlist = new AdapterCustomList(context, this, list, price, sprice, pos);
@@ -204,28 +198,25 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
             mProductsList.get(selectedPosition).setCustomPosition(position);
             Log.e(" po", "****" + position);
             Log.e(" pro", "****" + mProductsList.get(selectedPosition).getCustomPosition());
-            adapterProductsList.notifyDataSetChanged();
+            adapterProductsList.notifyItemChanged(selectedPosition);
             rl_bottom.setVisibility(View.GONE);
-        } else if (flag == 21) {
-            FragmentProductsAccToSubCategory fragment = new FragmentProductsAccToSubCategory();
-            Bundle bundle = new Bundle();
-            bundle.putString("id", mSubCategoriesList.get(position).getSubCategoryId());
-            fragment.setArguments(bundle);
-            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
-
         } else if (flag == 2) {
+            selectedPosition = position;
             int count = mProductsList.get(selectedPosition).getProduct_cart_count();
             count++;
             mProductsList.get(selectedPosition).setProduct_cart_count(count);
             adapterProductsList.notifyDataSetChanged();
-            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true);
+            HashMap<String, String> hm = mProductsList.get(position).getSetCustomOption().get(mProductsList.get(position).getCustomPosition());
+            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true, hm.get("id"));
 
         } else if (flag == 3) {
+            selectedPosition = position;
             int count = mProductsList.get(selectedPosition).getProduct_cart_count();
             if (count >= 1) {
                 count--;
                 mProductsList.get(selectedPosition).setProduct_cart_count(count);
-                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false);
+                HashMap<String, String> hm = mProductsList.get(position).getSetCustomOption().get(mProductsList.get(position).getCustomPosition());
+                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false, hm.get("id"));
                 adapterProductsList.notifyDataSetChanged();
             }
         }
@@ -272,19 +263,6 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
 
     private void setData(JSONObject data) {
         try {
-
-            JSONArray categories = data.getJSONArray("subcategories");
-            for (int i = 0; i < categories.length(); i++) {
-                JSONObject jo = categories.getJSONObject(i);
-                ModelHomeData modelHomeData = new ModelHomeData();
-                modelHomeData.setSubCategoryId(jo.getString("SubCategoryId"));
-                modelHomeData.setSubCategoryImage(jo.getString("SubCategoryImage"));
-                modelHomeData.setSubCategoryName(jo.getString("SubCategoryName"));
-                mSubCategoriesList.add(modelHomeData);
-            }
-            AdapterSubcategoriesNames adapterHomeCategories = new AdapterSubcategoriesNames(context, this, mSubCategoriesList);
-            listSubcategories.setAdapter(adapterHomeCategories);
-
             JSONArray product = data.getJSONArray("product");
             for (int i = 0; i < product.length(); i++) {
                 JSONObject jo = product.getJSONObject(i);
@@ -294,6 +272,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
                 modelProducts.setProductName(jo.getString("productName"));
                 modelProducts.setQuantity(jo.getString("quantity"));
                 modelProducts.setDiscount_value(jo.getString("discount_value"));
+                modelProducts.setProductDiscountPrice(jo.getString("productDiscountPrice"));
                 modelProducts.setProductPrice(jo.getString("productPrice"));
                 modelProducts.setUnitType(jo.getString("unitType"));
                 modelProducts.setRowType(1);
@@ -311,6 +290,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
                             JSONObject j1 = custom_option.getJSONObject(j);
                             HashMap<String, String> hm = new HashMap<String, String>();
                             hm.put("unitprice", j1.getString("unitprice"));
+                            hm.put("dis_price", j1.getString("dis_price"));
                             hm.put("unit", j1.getString("unit"));
                             hm.put("price", j1.getString("price"));
                             hm.put("id", j1.getString("id"));
@@ -322,10 +302,30 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
                         modelProducts.setSetCustomOption(listcustomoption);
                         modelProducts.setIsCustomoption(true);
                     } else {
+                        HashMap<String, String> hm = new HashMap<String, String>();
+                        hm.put("unitprice", modelProducts.getProductPrice());
+                        hm.put("dis_price", modelProducts.getProductDiscountPrice());
+                        hm.put("unit", "");
+                        hm.put("price", modelProducts.getProductPrice());
+                        hm.put("id", "");
+
+                        listcustomoption.add(hm);
                         modelProducts.setCustomPosition(0);
                         modelProducts.setIsCustomoption(false);
                         modelProducts.setSetCustomOption(listcustomoption);
                     }
+                } else {
+                    HashMap<String, String> hm = new HashMap<String, String>();
+                    hm.put("unitprice", modelProducts.getProductPrice());
+                    hm.put("dis_price", modelProducts.getProductDiscountPrice());
+                    hm.put("unit", "");
+                    hm.put("price", modelProducts.getProductPrice());
+                    hm.put("id", "");
+
+                    listcustomoption.add(hm);
+                    modelProducts.setCustomPosition(0);
+                    modelProducts.setIsCustomoption(false);
+                    modelProducts.setSetCustomOption(listcustomoption);
                 }
                 mProductsList.add(modelProducts);
             }

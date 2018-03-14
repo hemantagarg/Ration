@@ -27,6 +27,7 @@ import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
 import com.app.rationcart.models.ModelHomeData;
 import com.app.rationcart.models.ModelProducts;
+import com.app.rationcart.utils.AppConstant;
 import com.app.rationcart.utils.AppUtils;
 
 import org.json.JSONArray;
@@ -141,7 +142,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
             if (AppUtils.isNetworkAvailable(context)) {
 
                 // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBCATEGORY_PRODUCT + "subcat_id=" + categoryId;
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBCATEGORY_PRODUCT + "subcat_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context);
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -151,7 +152,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
         }
     }
 
-    private void addProducts(int count, String id, boolean isAdd) {
+    private void addProducts(int count, String id, boolean isAdd, String unitId) {
         try {
             if (AppUtils.isNetworkAvailable(context)) {
                 int methodType = 2;
@@ -159,7 +160,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                     methodType = 3;
                 }
                 // http://stackmindz.com/dev/rationcart/api/product_cart_count?product_id=12&product_count=1&token=123456789
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=";
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=" + AppUtils.getImeiNo(context) + "&unit_id=" + unitId;
                 new CommonAsyncTaskHashmap(methodType, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -194,6 +195,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                 modelProducts.setProductName(jo.getString("productName"));
                 modelProducts.setQuantity(jo.getString("quantity"));
                 modelProducts.setDiscount_value(jo.getString("discount_value"));
+                modelProducts.setProductDiscountPrice(jo.getString("productDiscountPrice"));
                 modelProducts.setProductPrice(jo.getString("productPrice"));
                 modelProducts.setUnitType(jo.getString("unitType"));
                 modelProducts.setRowType(1);
@@ -214,6 +216,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                             hm.put("unit", j1.getString("unit"));
                             hm.put("price", j1.getString("price"));
                             hm.put("id", j1.getString("id"));
+                            hm.put("dis_price", j1.getString("dis_price"));
 
                             listcustomoption.add(hm);
                         }
@@ -222,10 +225,30 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                         modelProducts.setSetCustomOption(listcustomoption);
                         modelProducts.setIsCustomoption(true);
                     } else {
+                        HashMap<String, String> hm = new HashMap<String, String>();
+                        hm.put("unitprice", modelProducts.getProductPrice());
+                        hm.put("dis_price", modelProducts.getProductDiscountPrice());
+                        hm.put("unit", "");
+                        hm.put("price", modelProducts.getProductPrice());
+                        hm.put("id", "");
+
+                        listcustomoption.add(hm);
                         modelProducts.setCustomPosition(0);
                         modelProducts.setIsCustomoption(false);
                         modelProducts.setSetCustomOption(listcustomoption);
                     }
+                } else {
+                    HashMap<String, String> hm = new HashMap<String, String>();
+                    hm.put("unitprice", modelProducts.getProductPrice());
+                    hm.put("dis_price", modelProducts.getProductDiscountPrice());
+                    hm.put("unit", "");
+                    hm.put("price", modelProducts.getProductPrice());
+                    hm.put("id", "");
+
+                    listcustomoption.add(hm);
+                    modelProducts.setCustomPosition(0);
+                    modelProducts.setIsCustomoption(false);
+                    modelProducts.setSetCustomOption(listcustomoption);
                 }
                 mProductsList.add(modelProducts);
             }
@@ -250,8 +273,8 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
 
     @Override
     public void onItemClickListener(int position, int flag) {
-        selectedPosition = position;
         if (flag == 511) {
+            selectedPosition = position;
             int pos = mProductsList.get(selectedPosition).getCustomPosition();
 
             ArrayList<HashMap<String, String>> arrayList = mProductsList.get(position).getSetCustomOption();
@@ -261,7 +284,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
 
             for (int i = 0; i < arrayList.size(); i++) {
                 list.add(arrayList.get(i).get("unitprice"));
-                sprice.add(arrayList.get(i).get("unit"));
+                sprice.add(arrayList.get(i).get("dis_price"));
                 price.add(arrayList.get(i).get("price"));
             }
             adapterlist = new AdapterCustomList(context, this, list, price, sprice, pos);
@@ -271,21 +294,33 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
             mProductsList.get(selectedPosition).setCustomPosition(position);
             Log.e(" po", "****" + position);
             Log.e(" pro", "****" + mProductsList.get(selectedPosition).getCustomPosition());
-            adapterProductsList.notifyDataSetChanged();
+            adapterProductsList.notifyItemChanged(selectedPosition);
             rl_bottom.setVisibility(View.GONE);
+        } else if (flag == 21) {
+            selectedPosition = position;
+            FragmentProductsAccToSubCategory fragment = new FragmentProductsAccToSubCategory();
+            Bundle bundle = new Bundle();
+            bundle.putString("id", mSubCategoriesList.get(position).getSubCategoryId());
+            fragment.setArguments(bundle);
+            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
         } else if (flag == 2) {
+            selectedPosition = position;
             int count = mProductsList.get(selectedPosition).getProduct_cart_count();
             count++;
             mProductsList.get(selectedPosition).setProduct_cart_count(count);
             adapterProductsList.notifyDataSetChanged();
-            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true);
+            HashMap<String, String> hm = mProductsList.get(position).getSetCustomOption().get(mProductsList.get(position).getCustomPosition());
+            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true, hm.get("id"));
         } else if (flag == 3) {
+            selectedPosition = position;
             int count = mProductsList.get(selectedPosition).getProduct_cart_count();
             if (count > 1) {
                 count--;
                 mProductsList.get(selectedPosition).setProduct_cart_count(count);
                 adapterProductsList.notifyDataSetChanged();
-                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false);
+                HashMap<String, String> hm = mProductsList.get(position).getSetCustomOption().get(mProductsList.get(position).getCustomPosition());
+                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false, hm.get("id"));
+
             }
         }
     }

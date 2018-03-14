@@ -155,14 +155,14 @@ public class AppUtils {
         return "";
     }
 
-    public static void setAvtarId(Context context, String image) {
+    public static void setImeiNo(Context context, String image) {
 
         try {
             SharedPreferences preferences = PreferenceManager
                     .getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = preferences.edit();
 
-            editor.putString("avtar_id", image);
+            editor.putString("IMEI_NO", image);
 
             editor.commit();
         } catch (Exception e) {
@@ -171,12 +171,12 @@ public class AppUtils {
         }
     }
 
-    public static String getAvtarId(Context context) {
+    public static String getImeiNo(Context context) {
 
         try {
             SharedPreferences preferences = PreferenceManager
                     .getDefaultSharedPreferences(context);
-            return preferences.getString("avtar_id", "");
+            return preferences.getString("IMEI_NO", "");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

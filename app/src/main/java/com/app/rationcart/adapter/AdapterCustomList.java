@@ -92,7 +92,6 @@ public class AdapterCustomList extends BaseAdapter {
 
         if (!sprice.get(position).equalsIgnoreCase("") && !sprice.get(position).equalsIgnoreCase("0") && !sprice.get(position).equalsIgnoreCase("0.00")) {
 
-
             String dataspan = "Rs " + price.get(position);
             Spannable wordtoSpan = new SpannableString(dataspan);
 
@@ -108,8 +107,6 @@ public class AdapterCustomList extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 listener.onItemClickListener(position, 11);
             }
         });

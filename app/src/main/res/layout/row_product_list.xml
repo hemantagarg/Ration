@@ -67,16 +67,6 @@
                     android:textColor="@color/textcolordark"
                     android:textSize="@dimen/text_size_13" />
 
-                <Spinner
-                    android:id="@+id/spinner1"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_below="@+id/productName"
-                    android:clickable="true"
-                    android:padding="@dimen/dp3"
-                    android:textSize="@dimen/text_size_12"
-                    android:visibility="gone" />
-
                 <TextView
                     android:id="@+id/price"
                     android:layout_width="wrap_content"

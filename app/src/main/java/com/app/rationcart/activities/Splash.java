@@ -40,11 +40,13 @@ public class Splash extends AppCompatActivity implements ApiResponse {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
+        context = this;
         if (!hasPermissions(this, PERMISSIONS)) {
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            AppUtils.setImeiNo(context, telephonyManager.getDeviceId());
         }
-        context = this;
-
     }
 
     @Override
@@ -67,7 +69,7 @@ public class Splash extends AppCompatActivity implements ApiResponse {
                     return false;
                 }
             }
-        }else {
+        } else {
             TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
             AppUtils.setImeiNo(context, telephonyManager.getDeviceId());
         }
@@ -78,7 +80,7 @@ public class Splash extends AppCompatActivity implements ApiResponse {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_ALL) {
-            if (grantResults.length > 0 && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
                 AppUtils.setImeiNo(context, telephonyManager.getDeviceId());
             }

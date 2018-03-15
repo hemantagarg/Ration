@@ -214,6 +214,14 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
             fragment.setArguments(bundle);
             DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
 
+        } else if (flag == 22) {
+            selectedPosition = position;
+            FragmentProductsDetail fragment = new FragmentProductsDetail();
+            Bundle bundle = new Bundle();
+            bundle.putString("id", mProductsList.get(position).getProductId());
+            fragment.setArguments(bundle);
+            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
+
         } else if (flag == 2) {
             selectedPosition = position;
             int count = mProductsList.get(selectedPosition).getProduct_cart_count();

@@ -27,6 +27,7 @@ import com.app.rationcart.R;
 import com.app.rationcart.adapter.DrawerListAdapter;
 import com.app.rationcart.fragment.BaseFragment;
 import com.app.rationcart.fragment.FragmentHome;
+import com.app.rationcart.fragment.FragmentProductsAccToSubCategory;
 import com.app.rationcart.interfaces.GlobalConstants;
 import com.app.rationcart.models.DrawerListModel;
 import com.app.rationcart.utils.AppConstant;
@@ -65,6 +66,7 @@ public class DashboardActivity extends AppCompatActivity {
     private RelativeLayout rl_home, rl_category, rl_search, rl_offers, rl_cart;
     private ImageView image_home, image_category, image_search, image_offer, image_cart;
     private TextView text_home, text_category, text_search, text_offer, text_cart;
+    private DrawerLayout drawer;
 
     /***********************************************
      * Function Name : getInstance
@@ -102,7 +104,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void initViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -213,6 +215,34 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 hideCategoryAnimation();
+            }
+        });
+/*
+        expendableView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long l) {
+                Log.e("group click", "clicked" + position);
+
+                return false;
+            }
+        });
+*/
+
+        expendableView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                //Nothing here ever fires
+                System.err.println("child clicked");
+                List<DrawerListModel> list = alldata.get(groupnamelist.get(groupPosition));
+                FragmentProductsAccToSubCategory fragmentAvtar_details = new FragmentProductsAccToSubCategory();
+                Bundle bundle = new Bundle();
+                bundle.putString("id", list.get(childPosition).getSubMenu1Id());
+                fragmentAvtar_details.setArguments(bundle);
+                pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragmentAvtar_details, true);
+                parent.collapseGroup(groupPosition);
+                drawer.closeDrawer(GravityCompat.START);
+
+                return true;
             }
         });
 

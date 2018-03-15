@@ -59,7 +59,7 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
         super.onResume();
         DashboardActivity.getInstance().manageFooterVisibitlity(true);
         DashboardActivity.getInstance().manageHeaderVisibitlity(true);
-        pagerMove();
+      //  pagerMove();
     }
 
     @Override
@@ -96,7 +96,6 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
                     for (int i = 0; i < dotsCount; i++) {
                         dots[i].setImageDrawable(getResources().getDrawable(R.drawable.nonselecteditem_dotwhite));
                     }
-
                     dots[position].setImageDrawable(getResources().getDrawable(R.drawable.selecteditem_dot));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -209,10 +208,21 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
     @Override
     public void onItemClickListener(int position, int flag) {
         if (flag == 2) {
-
             FragmentProductsAccToCategory fragment = new FragmentProductsAccToCategory();
             Bundle bundle = new Bundle();
             bundle.putString("id", mCategoriesList.get(position).getCategoryId());
+            fragment.setArguments(bundle);
+            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
+        } else if (flag == 4) {
+            FragmentProductsAccToSubCategory fragment = new FragmentProductsAccToSubCategory();
+            Bundle bundle = new Bundle();
+            bundle.putString("id", mDealsList.get(position).getCategoryId());
+            fragment.setArguments(bundle);
+            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
+        } else if (flag == 5) {
+            FragmentProductsAccToCategory fragment = new FragmentProductsAccToCategory();
+            Bundle bundle = new Bundle();
+            bundle.putString("id", mBrandsList.get(position).getCategoryId());
             fragment.setArguments(bundle);
             DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
         }
@@ -266,5 +276,27 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        try {
+            if (handler != null) {
+                handler.removeCallbacks(runabble);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        try {
+            if (handler != null) {
+                handler.removeCallbacks(runabble);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

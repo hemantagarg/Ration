@@ -105,7 +105,7 @@ public class AdapterHomeTopDeals extends RecyclerView.Adapter<RecyclerView.ViewH
 
         @Override
         public void onClick(View v) {
-            listener.onItemClickListener(getPosition(), 2);
+            listener.onItemClickListener(getPosition(), 4);
         }
 
     }

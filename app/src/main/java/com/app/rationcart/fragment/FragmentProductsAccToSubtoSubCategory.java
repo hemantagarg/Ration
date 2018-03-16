@@ -37,15 +37,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentProductsAccToSubCategory extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
+public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
 
-    public static FragmentProductsAccToSubCategory fragmentHome;
+    public static FragmentProductsAccToSubtoSubCategory fragmentHome;
     private Activity context;
     private ArrayList<ModelHomeData> mSubCategoriesList = new ArrayList<>();
     private ArrayList<ModelProducts> mProductsList = new ArrayList<>();
     private RecyclerView listSubcategories, listProducts;
     private View view;
-    private String TAG = FragmentProductsAccToSubCategory.class.getSimpleName();
+    private String TAG = FragmentProductsAccToSubtoSubCategory.class.getSimpleName();
     private String categoryId = "";
     private int selectedPosition = 0;
     private AdapterCustomList adapterlist;
@@ -53,9 +53,9 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
     private RelativeLayout rl_bottom;
     private AdapterProductsList adapterProductsList;
 
-    public static FragmentProductsAccToSubCategory getInstance() {
+    public static FragmentProductsAccToSubtoSubCategory getInstance() {
         if (fragmentHome == null)
-            fragmentHome = new FragmentProductsAccToSubCategory();
+            fragmentHome = new FragmentProductsAccToSubtoSubCategory();
         return fragmentHome;
     }
 
@@ -142,7 +142,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
             if (AppUtils.isNetworkAvailable(context)) {
 
                 // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBCATEGORY_PRODUCT + "subcat_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context);
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBTOSUBCATEGORY_PRODUCT + "subtosubcat_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context);
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -269,6 +269,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
         listSubcategories.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         listProducts.setLayoutManager(new LinearLayoutManager(context));
         listProducts.setNestedScrollingEnabled(false);
+        listSubcategories.setVisibility(View.GONE);
     }
 
     @Override

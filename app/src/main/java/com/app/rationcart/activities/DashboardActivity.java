@@ -26,7 +26,9 @@ import android.widget.TextView;
 import com.app.rationcart.R;
 import com.app.rationcart.adapter.DrawerListAdapter;
 import com.app.rationcart.fragment.BaseFragment;
+import com.app.rationcart.fragment.FragmentCategoriesList;
 import com.app.rationcart.fragment.FragmentHome;
+import com.app.rationcart.fragment.FragmentProductsAccToCategory;
 import com.app.rationcart.fragment.FragmentProductsAccToSubCategory;
 import com.app.rationcart.interfaces.GlobalConstants;
 import com.app.rationcart.models.DrawerListModel;
@@ -217,17 +219,21 @@ public class DashboardActivity extends AppCompatActivity {
                 hideCategoryAnimation();
             }
         });
-/*
         expendableView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView expandableListView, View view, int position, long l) {
                 Log.e("group click", "clicked" + position);
-
+                List<DrawerListModel> list = alldata.get(groupnamelist.get(position));
+                if (list == null || list.size() == 0) {
+                    FragmentProductsAccToCategory fragmentAvtar_details = new FragmentProductsAccToCategory();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", groupnamelistId.get(position));
+                    fragmentAvtar_details.setArguments(bundle);
+                    DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragmentAvtar_details, true);
+                }
                 return false;
             }
         });
-*/
-
         expendableView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
@@ -285,11 +291,11 @@ public class DashboardActivity extends AppCompatActivity {
                 image_category.setImageResource(R.drawable.category_orange);
                 text_category.setTextColor(getResources().getColor(R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_CATEGORIES_BAR).size() > 0) {
-                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome))
+                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList))
                         AppUtils.showErrorLog(TAG, "Category clicked");
                     activeCategoriesFragment();
                 } else
-                    pushFragments(GlobalConstants.TAB_CATEGORIES_BAR, new FragmentHome(), true);
+                    pushFragments(GlobalConstants.TAB_CATEGORIES_BAR, new FragmentCategoriesList(), true);
 
             }
         });
@@ -441,8 +447,8 @@ public class DashboardActivity extends AppCompatActivity {
                             AppUtils.showLog(TAG, " Current Fragment is Feed Fragment");
                             //  refreshHomeFragment();
                         }
-                        if (mStacks.get(mCurrentTab).size() > 0 && mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome) {
-                            AppUtils.showLog(TAG, " Current Fragment is Feed Fragment");
+                        if (mStacks.get(mCurrentTab).size() > 0 && mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList) {
+                            AppUtils.showLog(TAG, " Current Fragment is FragmentCategoriesList");
                             //  refreshHomeFragment();
                         }
                         if (mStacks.get(mCurrentTab).size() > 0 && mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome) {
@@ -451,7 +457,7 @@ public class DashboardActivity extends AppCompatActivity {
                         }
 
                         if (mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
-                                mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
+                                mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome) {

@@ -15,6 +15,7 @@ public interface JsonApiHelper {
     String CATEGORIES = "category.php?";
     String CATEGORY_PRODUCT = "categoryproduct.php?";
     String SUBCATEGORY_PRODUCT = "subcategoryproduct.php?";
+    String SUBTOSUBCATEGORY_PRODUCT = "subtosubcatproduct.php?";
     String ADD_PRODUCT = "product_cart_count.php?";
     String PRODUCT_DETAIL = "product-detail.php?";
 

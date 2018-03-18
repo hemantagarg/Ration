@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -52,6 +53,7 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
     private ListView list_weight;
     private RelativeLayout rl_bottom;
     private AdapterProductsList adapterProductsList;
+    private TextView mTvNoProduct;
 
     public static FragmentProductsAccToSubtoSubCategory getInstance() {
         if (fragmentHome == null)
@@ -262,6 +264,12 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
             adapterProductsList = new AdapterProductsList(context, this, mProductsList);
             listProducts.setAdapter(adapterProductsList);
 
+            if (mProductsList.size()>0){
+                mTvNoProduct.setVisibility(View.GONE);
+            }else {
+                mTvNoProduct.setVisibility(View.VISIBLE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -277,6 +285,7 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
         listProducts.setLayoutManager(new LinearLayoutManager(context));
         listProducts.setNestedScrollingEnabled(false);
         listSubcategories.setVisibility(View.GONE);
+        mTvNoProduct = view.findViewById(R.id.mTvNoProduct);
     }
 
     @Override

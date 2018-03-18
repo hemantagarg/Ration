@@ -34,5 +34,15 @@
 
     </LinearLayout>
 
+    <TextView android:id="@+id/mTvNoProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/dp10"
+        android:text="No Product Found"
+        android:visibility="gone"
+        android:textColor="@color/textcolordark"
+        android:textSize="@dimen/text_size_14" />
+
     <include layout="@layout/incude_list" />
 </RelativeLayout>

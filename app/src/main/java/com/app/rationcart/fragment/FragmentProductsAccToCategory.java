@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -53,6 +54,7 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
     private ListView list_weight;
     private RelativeLayout rl_bottom;
     AdapterProductsList adapterProductsList;
+    private TextView mTvNoProduct;
 
     public static FragmentProductsAccToCategory getInstance() {
         if (fragmentHome == null)
@@ -177,11 +179,12 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
     private void initViews(View view) {
         listSubcategories = view.findViewById(R.id.list_subcategories);
         listProducts = view.findViewById(R.id.list_products);
-        list_weight = (ListView) view.findViewById(R.id.spinner_list);
-        rl_bottom = (RelativeLayout) view.findViewById(R.id.rl_bottom);
+        list_weight = view.findViewById(R.id.spinner_list);
+        rl_bottom = view.findViewById(R.id.rl_bottom);
         listSubcategories.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         listProducts.setLayoutManager(new LinearLayoutManager(context));
         listProducts.setNestedScrollingEnabled(false);
+        mTvNoProduct = view.findViewById(R.id.mTvNoProduct);
     }
 
     @Override
@@ -378,7 +381,11 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
             }
             adapterProductsList = new AdapterProductsList(context, this, mProductsList);
             listProducts.setAdapter(adapterProductsList);
-
+            if (mProductsList.size() > 0) {
+                mTvNoProduct.setVisibility(View.GONE);
+            } else {
+                mTvNoProduct.setVisibility(View.VISIBLE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

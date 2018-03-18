@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "529196446328",
+    "firebase_url": "https://ration-cart.firebaseio.com",
+    "project_id": "ration-cart",
+    "storage_bucket": "ration-cart.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529196446328:android:6f74431e060e1b10",
+        "android_client_info": {
+          "package_name": "com.app.rationcart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "529196446328-1jhdtnu2tl36bl2o1nulbuotk0b9s66u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXbzbHdQPcI7hBLnZbJddIBDdRITheSFA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

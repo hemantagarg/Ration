@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/layout_bg"
+    android:clickable="true">
+
+    <include
+        android:id="@+id/header_layout"
+        layout="@layout/header_layout" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mRecyclerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_below="@+id/header_layout" />
+
+    <RelativeLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_selector"
+        android:padding="@dimen/dp10">
+
+        <TextView
+            android:id="@+id/mTvTotalAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp10"
+            android:text="230 Rs"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_14" />
+
+        <TextView
+            android:id="@+id/mTvCheckout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp10"
+            android:text="Checkout"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_15" />
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

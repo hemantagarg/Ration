@@ -22,8 +22,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/dp10"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/dp15">
 
             <RelativeLayout
                 android:id="@+id/rl_top"
@@ -72,6 +72,26 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_size_17"
                     android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/mTvLogin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/mRlBack"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="@dimen/dp10"
+                    android:layout_marginTop="@dimen/dp10"
+                    android:background="@drawable/white_bg"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/dp5"
+                    android:paddingLeft="@dimen/dp20"
+                    android:paddingRight="@dimen/dp20"
+                    android:paddingTop="@dimen/dp5"
+                    android:text="Login"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_17"
+                    android:visibility="visible" />
+
 
             </RelativeLayout>
 
@@ -143,6 +163,19 @@
                         </RelativeLayout>
 
                         <TextView
+                            android:id="@+id/mTvOrderHistory"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/dp15"
+                            android:paddingLeft="@dimen/dp20"
+                            android:paddingTop="@dimen/dp15"
+                            android:text="Order History"
+                            android:textColor="@color/textcolordark"
+                            android:textSize="@dimen/text_size_17"
+                            android:visibility="visible" />
+
+
+                        <TextView
                             android:id="@+id/mTvOffers"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -191,6 +224,17 @@
                             android:textSize="@dimen/text_size_17"
                             android:visibility="visible" />
 
+                        <TextView
+                            android:id="@+id/mTVLogout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/dp15"
+                            android:paddingLeft="@dimen/dp20"
+                            android:paddingTop="@dimen/dp15"
+                            android:text="Logout"
+                            android:textColor="@color/textcolordark"
+                            android:textSize="@dimen/text_size_17"
+                            android:visibility="visible" />
 
                     </LinearLayout>
                 </ScrollView>

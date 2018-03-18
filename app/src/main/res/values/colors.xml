@@ -22,8 +22,8 @@
     <color name="tab_indicator_color">#F84713</color>
     <color name="black">#000000</color>
     <color name="button_bg">#3d85f3</color>
-    <color name="button_selected_bg">#2b78ef</color>
-    <color name="button_unselected_bg">#3d85f3</color>
+    <color name="button_selected_bg">#0b61a4</color>
+    <color name="button_unselected_bg">#1270b9</color>
     <color name="button_gren">#f92baf60</color>
     <color name="button_selected_gren">#3da353</color>
     <color name="logocolor">#F34A12</color>

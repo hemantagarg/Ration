@@ -11,21 +11,22 @@ public class ModelProducts {
 
     private int product_cart_count;
 
-    private String unitType;
+    private String unitType, unit_id, unit_value;
 
-    private String discount_value,productDiscountPrice;
+    private String discount_value, productDiscountPrice;
 
     private String image;
 
     private String quantity;
 
-    private String productPrice;
+    private String productPrice,total_amount;
 
     private String productName;
 
-    private String productId;
+    private String productId, cartId;
     private int rowType;
     private int sp_position = 0;
+    private ArrayList<ModelUnitPrice> listPrice;
 
 
     public int getCustomPosition() {
@@ -145,5 +146,45 @@ public class ModelProducts {
 
     public void setProductDiscountPrice(String productDiscountPrice) {
         this.productDiscountPrice = productDiscountPrice;
+    }
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_value() {
+        return unit_value;
+    }
+
+    public void setUnit_value(String unit_value) {
+        this.unit_value = unit_value;
+    }
+
+    public String getTotal_amount() {
+        return total_amount;
+    }
+
+    public void setTotal_amount(String total_amount) {
+        this.total_amount = total_amount;
+    }
+
+    public ArrayList<ModelUnitPrice> getListPrice() {
+        return listPrice;
+    }
+
+    public void setListPrice(ArrayList<ModelUnitPrice> listPrice) {
+        this.listPrice = listPrice;
     }
 }

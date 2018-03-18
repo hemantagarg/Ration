@@ -27,6 +27,7 @@ import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
 import com.app.rationcart.models.ModelHomeData;
 import com.app.rationcart.models.ModelProducts;
+import com.app.rationcart.models.ModelUnitPrice;
 import com.app.rationcart.utils.AppConstant;
 import com.app.rationcart.utils.AppUtils;
 
@@ -35,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class FragmentProductsAccToSubCategory extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
 
@@ -142,7 +142,8 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
             if (AppUtils.isNetworkAvailable(context)) {
 
                 // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBCATEGORY_PRODUCT + "subcat_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context);
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBCATEGORY_PRODUCT + "subcat_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context)
+                        + "&user_id=" + AppUtils.getUserId(context);
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -160,7 +161,8 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                     methodType = 3;
                 }
                 // http://stackmindz.com/dev/rationcart/api/product_cart_count?product_id=12&product_count=1&token=123456789
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=" + AppUtils.getImeiNo(context) + "&unit_id=" + unitId;
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=" + AppUtils.getImeiNo(context)
+                        + "&unit_id=" + unitId + "&user_id=" + AppUtils.getUserId(context);
                 new CommonAsyncTaskHashmap(methodType, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -173,8 +175,8 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
 
     private void setData(JSONObject data) {
         try {
-            if (data.has("subcategories")) {
-                JSONArray categories = data.getJSONArray("subcategories");
+            if (data.has("subtosubcategories")) {
+                JSONArray categories = data.getJSONArray("subtosubcategories");
                 for (int i = 0; i < categories.length(); i++) {
                     JSONObject jo = categories.getJSONObject(i);
                     ModelHomeData modelHomeData = new ModelHomeData();
@@ -202,8 +204,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                 modelProducts.setImage(jo.getString("image"));
                 modelProducts.setProduct_cart_count(jo.getInt("product_cart_count"));
 
-                ArrayList<HashMap<String, String>> listcustomoption = new ArrayList<HashMap<String, String>>();
-
+                ArrayList<ModelUnitPrice> priceList = new ArrayList<>();
                 if (jo.has("unitprice")) {
 
                     JSONArray custom_option = jo.getJSONArray("unitprice");
@@ -211,44 +212,50 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                         for (int j = 0; j < custom_option.length(); j++) {
 
                             JSONObject j1 = custom_option.getJSONObject(j);
-                            HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("unitprice", j1.getString("unitprice"));
-                            hm.put("unit", j1.getString("unit"));
-                            hm.put("price", j1.getString("price"));
-                            hm.put("id", j1.getString("id"));
-                            hm.put("dis_price", j1.getString("dis_price"));
 
-                            listcustomoption.add(hm);
+                            ModelUnitPrice modelUnitPrice = new ModelUnitPrice();
+                            modelUnitPrice.setCart_count(j1.getInt("cart_count"));
+                            modelUnitPrice.setUnitprice(j1.getString("unitprice"));
+                            modelUnitPrice.setUnit(j1.getString("unit"));
+                            modelUnitPrice.setDis_price(j1.getString("dis_price"));
+                            modelUnitPrice.setPrice(j1.getString("price"));
+                            modelUnitPrice.setId(j1.getString("id"));
+                            priceList.add(modelUnitPrice);
+
                         }
-
+                        modelProducts.setListPrice(priceList);
                         modelProducts.setCustomPosition(0);
-                        modelProducts.setSetCustomOption(listcustomoption);
                         modelProducts.setIsCustomoption(true);
                     } else {
-                        HashMap<String, String> hm = new HashMap<String, String>();
-                        hm.put("unitprice", modelProducts.getProductPrice());
-                        hm.put("dis_price", modelProducts.getProductDiscountPrice());
-                        hm.put("unit", "");
-                        hm.put("price", modelProducts.getProductPrice());
-                        hm.put("id", "");
+                        ModelUnitPrice modelUnitPrice = new ModelUnitPrice();
+                        modelUnitPrice.setCart_count(modelProducts.getProduct_cart_count());
+                        modelUnitPrice.setUnitprice(modelProducts.getProductPrice());
+                        modelUnitPrice.setUnit("");
+                        modelUnitPrice.setDis_price(modelProducts.getProductDiscountPrice());
+                        modelUnitPrice.setPrice(modelProducts.getProductPrice());
+                        modelUnitPrice.setId("");
+                        priceList.add(modelUnitPrice);
 
-                        listcustomoption.add(hm);
+                        modelProducts.setListPrice(priceList);
+
                         modelProducts.setCustomPosition(0);
                         modelProducts.setIsCustomoption(false);
-                        modelProducts.setSetCustomOption(listcustomoption);
                     }
                 } else {
-                    HashMap<String, String> hm = new HashMap<String, String>();
-                    hm.put("unitprice", modelProducts.getProductPrice());
-                    hm.put("dis_price", modelProducts.getProductDiscountPrice());
-                    hm.put("unit", "");
-                    hm.put("price", modelProducts.getProductPrice());
-                    hm.put("id", "");
 
-                    listcustomoption.add(hm);
+                    ModelUnitPrice modelUnitPrice = new ModelUnitPrice();
+                    modelUnitPrice.setCart_count(modelProducts.getProduct_cart_count());
+                    modelUnitPrice.setUnitprice(modelProducts.getProductPrice());
+                    modelUnitPrice.setUnit("");
+                    modelUnitPrice.setDis_price(modelProducts.getProductDiscountPrice());
+                    modelUnitPrice.setPrice(modelProducts.getProductPrice());
+                    modelUnitPrice.setId("");
+                    priceList.add(modelUnitPrice);
+
+                    modelProducts.setListPrice(priceList);
+
                     modelProducts.setCustomPosition(0);
                     modelProducts.setIsCustomoption(false);
-                    modelProducts.setSetCustomOption(listcustomoption);
                 }
                 mProductsList.add(modelProducts);
             }
@@ -277,15 +284,16 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
             selectedPosition = position;
             int pos = mProductsList.get(selectedPosition).getCustomPosition();
 
-            ArrayList<HashMap<String, String>> arrayList = mProductsList.get(position).getSetCustomOption();
+            ArrayList<ModelUnitPrice> arrayList = mProductsList.get(position).getListPrice();
             ArrayList<String> list = new ArrayList<>();
             ArrayList<String> price = new ArrayList<>();
             ArrayList<String> sprice = new ArrayList<>();
 
             for (int i = 0; i < arrayList.size(); i++) {
-                list.add(arrayList.get(i).get("unitprice"));
-                sprice.add(arrayList.get(i).get("dis_price"));
-                price.add(arrayList.get(i).get("price"));
+                ModelUnitPrice model = arrayList.get(i);
+                list.add(model.getUnitprice());
+                sprice.add(model.getDis_price());
+                price.add(model.getPrice());
             }
             adapterlist = new AdapterCustomList(context, this, list, price, sprice, pos);
             list_weight.setAdapter(adapterlist);
@@ -303,24 +311,32 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
             bundle.putString("id", mSubCategoriesList.get(position).getSubCategoryId());
             fragment.setArguments(bundle);
             DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
+        } else if (flag == 22) {
+            selectedPosition = position;
+            FragmentProductsDetail fragment = new FragmentProductsDetail();
+            Bundle bundle = new Bundle();
+            bundle.putString("id", mProductsList.get(position).getProductId());
+            fragment.setArguments(bundle);
+            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
+
         } else if (flag == 2) {
             selectedPosition = position;
-            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
+            ModelUnitPrice modelUnitPrice = mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition());
+            int count = modelUnitPrice.getCart_count();
             count++;
-            mProductsList.get(selectedPosition).setProduct_cart_count(count);
+            mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition()).setCart_count(count);
             adapterProductsList.notifyDataSetChanged();
-            HashMap<String, String> hm = mProductsList.get(position).getSetCustomOption().get(mProductsList.get(position).getCustomPosition());
-            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true, hm.get("id"));
+            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true, modelUnitPrice.getId());
+
         } else if (flag == 3) {
             selectedPosition = position;
-            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
-            if (count > 1) {
+            ModelUnitPrice modelUnitPrice = mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition());
+            int count = modelUnitPrice.getCart_count();
+            if (count >= 1) {
                 count--;
-                mProductsList.get(selectedPosition).setProduct_cart_count(count);
+                mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition()).setCart_count(count);
+                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false, modelUnitPrice.getId());
                 adapterProductsList.notifyDataSetChanged();
-                HashMap<String, String> hm = mProductsList.get(position).getSetCustomOption().get(mProductsList.get(position).getCustomPosition());
-                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false, hm.get("id"));
-
             }
         }
     }
@@ -341,9 +357,10 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
 
                 } else {
-                    int count = mProductsList.get(selectedPosition).getProduct_cart_count();
+                    ModelUnitPrice modelUnitPrice = mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition());
+                    int count = modelUnitPrice.getCart_count();
                     count++;
-                    mProductsList.get(selectedPosition).setProduct_cart_count(count);
+                    mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition()).setCart_count(count);
                     adapterProductsList.notifyDataSetChanged();
                 }
             } else if (method == 3) {
@@ -351,10 +368,12 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
 
                 } else {
-                    int count = mProductsList.get(selectedPosition).getProduct_cart_count();
+                    ModelUnitPrice modelUnitPrice = mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition());
+                    int count = modelUnitPrice.getCart_count();
                     count--;
-                    mProductsList.get(selectedPosition).setProduct_cart_count(count);
+                    mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition()).setCart_count(count);
                     adapterProductsList.notifyDataSetChanged();
+
                 }
             }
         } catch (JSONException e) {

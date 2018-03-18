@@ -1,6 +1,9 @@
 package com.app.rationcart.activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -26,10 +29,13 @@ import android.widget.TextView;
 import com.app.rationcart.R;
 import com.app.rationcart.adapter.DrawerListAdapter;
 import com.app.rationcart.fragment.BaseFragment;
+import com.app.rationcart.fragment.FragmentCartList;
 import com.app.rationcart.fragment.FragmentCategoriesList;
 import com.app.rationcart.fragment.FragmentHome;
+import com.app.rationcart.fragment.FragmentOrderHistory;
 import com.app.rationcart.fragment.FragmentProductsAccToCategory;
 import com.app.rationcart.fragment.FragmentProductsAccToSubCategory;
+import com.app.rationcart.fragment.FragmentSelectAddress;
 import com.app.rationcart.interfaces.GlobalConstants;
 import com.app.rationcart.models.DrawerListModel;
 import com.app.rationcart.utils.AppConstant;
@@ -67,7 +73,7 @@ public class DashboardActivity extends AppCompatActivity {
     private String mCurrentTab;
     private RelativeLayout rl_home, rl_category, rl_search, rl_offers, rl_cart;
     private ImageView image_home, image_category, image_search, image_offer, image_cart;
-    private TextView text_home, text_category, text_search, text_offer, text_cart;
+    private TextView text_home, text_category, text_search, text_offer, text_cart, mTvLogin, mTVLogout, mTvOrderHistory;
     private DrawerLayout drawer;
 
     /***********************************************
@@ -96,11 +102,26 @@ public class DashboardActivity extends AppCompatActivity {
         mStacks.put(GlobalConstants.TAB_SEARCH_BAR, new Stack<Fragment>());
         mStacks.put(GlobalConstants.TAB_OFFERS_BAR, new Stack<Fragment>());
         mStacks.put(GlobalConstants.TAB_CART_BAR, new Stack<Fragment>());
-
         pushFragments(GlobalConstants.TAB_HOME_BAR, new FragmentHome(), true);
 
         setData();
         setListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (AppUtils.getUserId(context).equalsIgnoreCase("")) {
+            mTvLogin.setVisibility(View.VISIBLE);
+            mTvUserName.setVisibility(View.GONE);
+            mTVLogout.setVisibility(View.GONE);
+            mTvOrderHistory.setVisibility(View.GONE);
+        } else {
+            mTvLogin.setVisibility(View.GONE);
+            mTvUserName.setVisibility(View.VISIBLE);
+            mTVLogout.setVisibility(View.VISIBLE);
+            mTvOrderHistory.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initViews() {
@@ -153,6 +174,9 @@ public class DashboardActivity extends AppCompatActivity {
         text_search = (TextView) findViewById(R.id.text_search);
         text_offer = (TextView) findViewById(R.id.text_offer);
         text_cart = (TextView) findViewById(R.id.text_cart);
+        mTvLogin = (TextView) findViewById(R.id.mTvLogin);
+        mTVLogout = (TextView) findViewById(R.id.mTVLogout);
+        mTvOrderHistory = (TextView) findViewById(R.id.mTvOrderHistory);
 
     }
 
@@ -173,6 +197,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void setData() {
         try {
+            mTvUserName.setText(AppUtils.getUserName(context));
+
             String mainData = AppUtils.getHomeCategories(context);
             JSONObject data = new JSONObject(mainData);
 
@@ -202,7 +228,6 @@ public class DashboardActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void setListener() {
@@ -213,6 +238,32 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
+        mTVLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showLogoutBox();
+            }
+        });
+        mTvHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+        mTvOrderHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentOrderHistory(), true);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+        mTvLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         mRlBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -230,6 +281,7 @@ public class DashboardActivity extends AppCompatActivity {
                     bundle.putString("id", groupnamelistId.get(position));
                     fragmentAvtar_details.setArguments(bundle);
                     DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragmentAvtar_details, true);
+                    drawer.closeDrawer(GravityCompat.START);
                 }
                 return false;
             }
@@ -319,15 +371,15 @@ public class DashboardActivity extends AppCompatActivity {
         rl_cart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                unSelectImages();
-                image_cart.setImageResource(R.drawable.cart_orange);
+                // unSelectImages();
+               /* image_cart.setImageResource(R.drawable.cart_orange);
                 text_cart.setTextColor(getResources().getColor(R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_CART_BAR).size() > 0) {
-                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome))
+                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentCartList))
                         AppUtils.showErrorLog(TAG, "cart clicked");
                     activeCartFragment();
-                } else
-                    pushFragments(GlobalConstants.TAB_CART_BAR, new FragmentHome(), true);
+                } else*/
+                pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentCartList(), true);
 
             }
         });
@@ -356,6 +408,42 @@ public class DashboardActivity extends AppCompatActivity {
         });
         expendableView.startAnimation(anim);
     }
+
+    private void showLogoutBox() {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                DashboardActivity.this);
+
+        alertDialog.setTitle("LOG OUT !");
+
+        alertDialog.setMessage("Are you sure you want to Logout?");
+
+        alertDialog.setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        AppUtils.setUserId(context, "");
+                        AppUtils.setUseremail(context, "");
+                        AppUtils.setUserName(context, "");
+                        AppUtils.setAuthToken(context, "");
+                        mTvUserName.setVisibility(View.GONE);
+                        mTvLogin.setVisibility(View.VISIBLE);
+                    }
+
+                });
+
+        alertDialog.setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+
+    }
+
 
     private void showCategoryAnimation() {
         anim = AnimationUtils.loadAnimation(context, R.anim.right_in);
@@ -451,14 +539,13 @@ public class DashboardActivity extends AppCompatActivity {
                             AppUtils.showLog(TAG, " Current Fragment is FragmentCategoriesList");
                             //  refreshHomeFragment();
                         }
-                        if (mStacks.get(mCurrentTab).size() > 0 && mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome) {
-                            AppUtils.showLog(TAG, " Current Fragment is Notification Fragment");
+                        if (mStacks.get(mCurrentTab).size() > 0 && mStacks.get(mCurrentTab).lastElement() instanceof FragmentCartList) {
+                            AppUtils.showLog(TAG, " Current Fragment is Cart Fragment");
                             //  refreshProfileFragment();
                         }
 
                         if (mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList ||
-                                mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome) {
                             manageHeaderVisibitlity(true);
@@ -471,14 +558,13 @@ public class DashboardActivity extends AppCompatActivity {
                 }
             } else {
                 // do nothing.. fragment already handled back button press.
-
             }
         }
     }
 
     private void refreshFragments() {
-        if (currentFragment instanceof FragmentHome) {
-            ((FragmentHome) currentFragment).onResume();
+        if (currentFragment instanceof FragmentSelectAddress) {
+            ((FragmentSelectAddress) currentFragment).onResume();
         }
     }
 

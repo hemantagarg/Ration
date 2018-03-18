@@ -23,4 +23,29 @@
     <string name="top_deals">Top Deals</string>
     <string name="checkout">Checkout</string>
 
+    <string name="enter_name">Please enter your name.</string>
+    <string name="enter_address">Please enter your address.</string>
+    <string name="enter_landmark">Please enter your landmark.</string>
+    <string name="enter_prescription">Please upload prescription.</string>
+    <string name="enter_zipcode">Please enter your zipcode.</string>
+    <string name="enter_valid_zipcode">Please enter valid zipcode.</string>
+    <string name="enter_comment">Please enter your comment.</string>
+    <string name="enter_mobileno">Please enter your valid phone no.</string>
+    <string name="enter_lastname">Please enter your lastname.</string>
+    <string name="mobileno_Length">Mobile no should be at least 10 digit.</string>
+    <string name="save_Successful">Address save Sucessfully.</string>
+    <string name="sign_in">Sign in</string>
+    <string name="log_in">Log In</string>
+    <string name="signup">Sign Up</string>
+    <string name="enter_email">Please enter email</string>
+    <string name="enter_password">Please enter password</string>
+    <string name="enter_valid_emailid">Please enter valid emailid</string>
+    <string name="hint_enter_email">Enter Email</string>
+    <string name="hint_enter_password">Enter Password</string>
+    <string name="hint_enter_mbno">Enter Mobile Number</string>
+    <string name="hint_enter_name">Enter Name</string>
+    <string name="or">Or</string>
+    <string name="enter_mb">Enter Mobile no</string>
+    <string name="delivery_time_slot_grocery">Delivery time slot for Grocery</string>
+    <string name="payment_mode">Payment Mode</string>
 </resources>

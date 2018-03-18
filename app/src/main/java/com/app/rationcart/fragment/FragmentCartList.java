@@ -1,6 +1,9 @@
 package com.app.rationcart.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,23 +14,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.app.rationcart.R;
 import com.app.rationcart.activities.DashboardActivity;
+import com.app.rationcart.activities.LoginActivity;
+import com.app.rationcart.adapter.AdapterCartList;
 import com.app.rationcart.adapter.AdapterCustomList;
-import com.app.rationcart.adapter.AdapterProductsList;
-import com.app.rationcart.adapter.AdapterSubcategoriesNames;
 import com.app.rationcart.aynctask.CommonAsyncTaskHashmap;
 import com.app.rationcart.iclasses.HeaderViewManager;
 import com.app.rationcart.interfaces.ApiResponse;
 import com.app.rationcart.interfaces.HeaderViewClickListener;
 import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
-import com.app.rationcart.models.ModelHomeData;
 import com.app.rationcart.models.ModelProducts;
-import com.app.rationcart.models.ModelUnitPrice;
 import com.app.rationcart.utils.AppConstant;
 import com.app.rationcart.utils.AppUtils;
 
@@ -36,26 +38,27 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
+public class FragmentCartList extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
 
-    public static FragmentProductsAccToSubtoSubCategory fragmentHome;
+    public static FragmentCartList fragmentHome;
     private Activity context;
-    private ArrayList<ModelHomeData> mSubCategoriesList = new ArrayList<>();
     private ArrayList<ModelProducts> mProductsList = new ArrayList<>();
-    private RecyclerView listSubcategories, listProducts;
+    private RecyclerView listProducts;
     private View view;
-    private String TAG = FragmentProductsAccToSubtoSubCategory.class.getSimpleName();
-    private String categoryId = "";
+    private String TAG = FragmentCartList.class.getSimpleName();
+    private String totalPrice = "", finalquantity = "";
     private int selectedPosition = 0;
     private AdapterCustomList adapterlist;
     private ListView list_weight;
     private RelativeLayout rl_bottom;
-    private AdapterProductsList adapterProductsList;
+    private AdapterCartList adapterProductsList;
+    private TextView mTvTotalAmount;
 
-    public static FragmentProductsAccToSubtoSubCategory getInstance() {
+    public static FragmentCartList getInstance() {
         if (fragmentHome == null)
-            fragmentHome = new FragmentProductsAccToSubtoSubCategory();
+            fragmentHome = new FragmentCartList();
         return fragmentHome;
     }
 
@@ -70,7 +73,7 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_products_acc_category, container, false);
+        view = inflater.inflate(R.layout.fragment_cart, container, false);
         return view;
     }
 
@@ -94,7 +97,7 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
     private void manageHeaderView() {
 
         HeaderViewManager.getInstance().InitializeHeaderView(null, view, manageHeaderClick());
-        HeaderViewManager.getInstance().setHeading(true, "Products");
+        HeaderViewManager.getInstance().setHeading(true, "Review Order");
         HeaderViewManager.getInstance().setLeftSideHeaderView(true, R.drawable.left_arrow);
         HeaderViewManager.getInstance().setRightSideHeaderView(false, R.drawable.search);
         HeaderViewManager.getInstance().setLogoView(false);
@@ -123,7 +126,7 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
     private void getBundle() {
         Bundle b = getArguments();
         if (b != null) {
-            categoryId = b.getString("id");
+            //categoryId = b.getString("id");
         }
     }
 
@@ -132,7 +135,21 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
         rl_bottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                rl_bottom.setVisibility(View.GONE);
+                if (AppUtils.getUserId(context).equalsIgnoreCase("")) {
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    if (mProductsList.size() > 0) {
+                        FragmentSelectAddress fragmentSelectAddress = new FragmentSelectAddress();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("price", totalPrice);
+                        bundle.putString("finalquantity", finalquantity);
+                        fragmentSelectAddress.setArguments(bundle);
+                        DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragmentSelectAddress, true);
+                    } else
+                        Toast.makeText(context, "Please add atleast one item in cart", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }
@@ -141,8 +158,8 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
         try {
             if (AppUtils.isNetworkAvailable(context)) {
 
-                // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.SUBTOSUBCATEGORY_PRODUCT + "subtosubcat_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context)
+                // http://stackmindz.com/dev/rationcart/api/CART_PRODUCT.php?cat_id=1
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.CART_PRODUCT + "token=" + AppUtils.getImeiNo(context)
                         + "&user_id=" + AppUtils.getUserId(context);
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
@@ -161,9 +178,25 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
                     methodType = 3;
                 }
                 // http://stackmindz.com/dev/rationcart/api/product_cart_count?product_id=12&product_count=1&token=123456789
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=" + AppUtils.getImeiNo(context)
-                        + "&unit_id=" + unitId + "&user_id=" + AppUtils.getUserId(context);
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_PRODUCT + "product_id=" + id + "&product_count=" + count + "&token=" + AppUtils.getImeiNo(context) + "&unit_id=" + unitId
+                        + "&user_id=" + AppUtils.getUserId(context);
                 new CommonAsyncTaskHashmap(methodType, context, this).getqueryJsonbject(url, null, Request.Method.GET);
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteCartItem(String id) {
+        try {
+            if (AppUtils.isNetworkAvailable(context)) {
+                //   http://stackmindz.com/dev/rationcart/api/deletecartitem?cart_id=257
+                // &token=355241080144570&user_id=
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.DELETE_CART_ITEM + "cart_id=" + id + "&token=" + AppUtils.getImeiNo(context)
+                        + "&user_id=" + AppUtils.getUserId(context);
+                new CommonAsyncTaskHashmap(6, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
             }
@@ -175,92 +208,31 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
 
     private void setData(JSONObject data) {
         try {
-            if (data.has("subcategories")) {
-                JSONArray categories = data.getJSONArray("subcategories");
-                for (int i = 0; i < categories.length(); i++) {
-                    JSONObject jo = categories.getJSONObject(i);
-                    ModelHomeData modelHomeData = new ModelHomeData();
-                    modelHomeData.setSubCategoryId(jo.getString("SubCategoryId"));
-                    modelHomeData.setSubCategoryImage(jo.getString("SubCategoryImage"));
-                    modelHomeData.setSubCategoryName(jo.getString("SubCategoryName"));
-                    mSubCategoriesList.add(modelHomeData);
-                }
-                AdapterSubcategoriesNames adapterHomeCategories = new AdapterSubcategoriesNames(context, this, mSubCategoriesList);
-                listSubcategories.setAdapter(adapterHomeCategories);
-            }
-            JSONArray product = data.getJSONArray("product");
+            mProductsList.clear();
+            JSONArray product = data.getJSONArray("cart_product");
             for (int i = 0; i < product.length(); i++) {
                 JSONObject jo = product.getJSONObject(i);
-                ModelProducts modelProducts = new ModelProducts();
 
+                ModelProducts modelProducts = new ModelProducts();
+                modelProducts.setCartId(jo.getString("cartId"));
                 modelProducts.setProductId(jo.getString("productId"));
                 modelProducts.setProductName(jo.getString("productName"));
                 modelProducts.setQuantity(jo.getString("quantity"));
-                modelProducts.setDiscount_value(jo.getString("discount_value"));
-                modelProducts.setProductDiscountPrice(jo.getString("productDiscountPrice"));
                 modelProducts.setProductPrice(jo.getString("productPrice"));
-                modelProducts.setUnitType(jo.getString("unitType"));
+                modelProducts.setTotal_amount(jo.getString("total_amount"));
+                modelProducts.setUnit_value(jo.getString("unit_value"));
                 modelProducts.setRowType(1);
                 modelProducts.setImage(jo.getString("image"));
-                modelProducts.setProduct_cart_count(jo.getInt("product_cart_count"));
+                modelProducts.setProduct_cart_count(jo.getInt("quantity"));
+                modelProducts.setUnit_id(jo.getString("unit_id"));
 
-                ArrayList<ModelUnitPrice> priceList = new ArrayList<>();
-                if (jo.has("unitprice")) {
-
-                    JSONArray custom_option = jo.getJSONArray("unitprice");
-                    if ((custom_option.length() > 0)) {
-                        for (int j = 0; j < custom_option.length(); j++) {
-
-                            JSONObject j1 = custom_option.getJSONObject(j);
-
-                            ModelUnitPrice modelUnitPrice = new ModelUnitPrice();
-                            modelUnitPrice.setCart_count(j1.getInt("cart_count"));
-                            modelUnitPrice.setUnitprice(j1.getString("unitprice"));
-                            modelUnitPrice.setUnit(j1.getString("unit"));
-                            modelUnitPrice.setDis_price(j1.getString("dis_price"));
-                            modelUnitPrice.setPrice(j1.getString("price"));
-                            modelUnitPrice.setId(j1.getString("id"));
-                            priceList.add(modelUnitPrice);
-
-                        }
-                        modelProducts.setListPrice(priceList);
-                        modelProducts.setCustomPosition(0);
-                        modelProducts.setIsCustomoption(true);
-                    } else {
-                        ModelUnitPrice modelUnitPrice = new ModelUnitPrice();
-                        modelUnitPrice.setCart_count(modelProducts.getProduct_cart_count());
-                        modelUnitPrice.setUnitprice(modelProducts.getProductPrice());
-                        modelUnitPrice.setUnit("");
-                        modelUnitPrice.setDis_price(modelProducts.getProductDiscountPrice());
-                        modelUnitPrice.setPrice(modelProducts.getProductPrice());
-                        modelUnitPrice.setId("");
-                        priceList.add(modelUnitPrice);
-
-                        modelProducts.setListPrice(priceList);
-
-                        modelProducts.setCustomPosition(0);
-                        modelProducts.setIsCustomoption(false);
-                    }
-                } else {
-
-                    ModelUnitPrice modelUnitPrice = new ModelUnitPrice();
-                    modelUnitPrice.setCart_count(modelProducts.getProduct_cart_count());
-                    modelUnitPrice.setUnitprice(modelProducts.getProductPrice());
-                    modelUnitPrice.setUnit("");
-                    modelUnitPrice.setDis_price(modelProducts.getProductDiscountPrice());
-                    modelUnitPrice.setPrice(modelProducts.getProductPrice());
-                    modelUnitPrice.setId("");
-                    priceList.add(modelUnitPrice);
-
-                    modelProducts.setListPrice(priceList);
-
-                    modelProducts.setCustomPosition(0);
-                    modelProducts.setIsCustomoption(false);
-                }
                 mProductsList.add(modelProducts);
             }
-            adapterProductsList = new AdapterProductsList(context, this, mProductsList);
+            adapterProductsList = new AdapterCartList(context, this, mProductsList);
             listProducts.setAdapter(adapterProductsList);
+            totalPrice = data.getString("finalAmount");
+            finalquantity = data.getString("finalquantity");
+            mTvTotalAmount.setText(data.getString("finalAmount") + " Rs");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -269,14 +241,12 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
     }
 
     private void initViews(View view) {
-        listSubcategories = view.findViewById(R.id.list_subcategories);
         listProducts = view.findViewById(R.id.list_products);
         list_weight = (ListView) view.findViewById(R.id.spinner_list);
         rl_bottom = (RelativeLayout) view.findViewById(R.id.rl_bottom);
-        listSubcategories.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         listProducts.setLayoutManager(new LinearLayoutManager(context));
         listProducts.setNestedScrollingEnabled(false);
-        listSubcategories.setVisibility(View.GONE);
+        mTvTotalAmount = view.findViewById(R.id.mTvTotalAmount);
     }
 
     @Override
@@ -285,16 +255,15 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
             selectedPosition = position;
             int pos = mProductsList.get(selectedPosition).getCustomPosition();
 
-            ArrayList<ModelUnitPrice> arrayList = mProductsList.get(position).getListPrice();
+            ArrayList<HashMap<String, String>> arrayList = mProductsList.get(position).getSetCustomOption();
             ArrayList<String> list = new ArrayList<>();
             ArrayList<String> price = new ArrayList<>();
             ArrayList<String> sprice = new ArrayList<>();
 
             for (int i = 0; i < arrayList.size(); i++) {
-                ModelUnitPrice model = arrayList.get(i);
-                list.add(model.getUnitprice());
-                sprice.add(model.getDis_price());
-                price.add(model.getPrice());
+                list.add(arrayList.get(i).get("unitprice"));
+                sprice.add(arrayList.get(i).get("dis_price"));
+                price.add(arrayList.get(i).get("price"));
             }
             adapterlist = new AdapterCustomList(context, this, list, price, sprice, pos);
             list_weight.setAdapter(adapterlist);
@@ -305,41 +274,58 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
             Log.e(" pro", "****" + mProductsList.get(selectedPosition).getCustomPosition());
             adapterProductsList.notifyItemChanged(selectedPosition);
             rl_bottom.setVisibility(View.GONE);
-        } else if (flag == 21) {
+        } else if (flag == 5) {
+            // delete item from cart
             selectedPosition = position;
-            FragmentProductsAccToSubtoSubCategory fragment = new FragmentProductsAccToSubtoSubCategory();
-            Bundle bundle = new Bundle();
-            bundle.putString("id", mSubCategoriesList.get(position).getSubCategoryId());
-            fragment.setArguments(bundle);
-            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
-        } else if (flag == 22) {
-            selectedPosition = position;
-            FragmentProductsDetail fragment = new FragmentProductsDetail();
-            Bundle bundle = new Bundle();
-            bundle.putString("id", mProductsList.get(position).getProductId());
-            fragment.setArguments(bundle);
-            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
-
+            showConfirmtion(mProductsList.get(position).getCartId());
         } else if (flag == 2) {
             selectedPosition = position;
-            ModelUnitPrice modelUnitPrice = mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition());
-            int count = modelUnitPrice.getCart_count();
+            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
             count++;
-            mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition()).setCart_count(count);
+            mProductsList.get(selectedPosition).setProduct_cart_count(count);
             adapterProductsList.notifyDataSetChanged();
-            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true, modelUnitPrice.getId());
-
+            addProducts(count, mProductsList.get(selectedPosition).getProductId(), true, mProductsList.get(selectedPosition).getUnit_id());
         } else if (flag == 3) {
             selectedPosition = position;
-            ModelUnitPrice modelUnitPrice = mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition());
-            int count = modelUnitPrice.getCart_count();
-            if (count >= 1) {
+            int count = mProductsList.get(selectedPosition).getProduct_cart_count();
+            if (count > 1) {
                 count--;
-                mProductsList.get(position).getListPrice().get(mProductsList.get(position).getCustomPosition()).setCart_count(count);
-                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false, modelUnitPrice.getId());
+                mProductsList.get(selectedPosition).setProduct_cart_count(count);
                 adapterProductsList.notifyDataSetChanged();
+                addProducts(count, mProductsList.get(selectedPosition).getProductId(), false, mProductsList.get(selectedPosition).getUnit_id());
             }
         }
+    }
+
+    private void showConfirmtion(final String id) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                context);
+
+        alertDialog.setTitle("Delete Product");
+
+        alertDialog.setMessage("Are you sure you want to delete this item?");
+
+        alertDialog.setPositiveButton("CONFIRM",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.cancel();
+                        deleteCartItem(id);
+
+                    }
+
+                });
+
+        alertDialog.setNegativeButton("CANCEL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+
     }
 
 
@@ -356,25 +342,29 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
             } else if (method == 2) {
                 JSONObject commandResult = response.getJSONObject("commandResult");
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
-
+                    getProducts();
                 } else {
-                    ModelUnitPrice modelUnitPrice = mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition());
-                    int count = modelUnitPrice.getCart_count();
+                    int count = mProductsList.get(selectedPosition).getProduct_cart_count();
                     count++;
-                    mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition()).setCart_count(count);
+                    mProductsList.get(selectedPosition).setProduct_cart_count(count);
                     adapterProductsList.notifyDataSetChanged();
                 }
             } else if (method == 3) {
                 JSONObject commandResult = response.getJSONObject("commandResult");
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
-
+                    getProducts();
                 } else {
-                    ModelUnitPrice modelUnitPrice = mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition());
-                    int count = modelUnitPrice.getCart_count();
+                    int count = mProductsList.get(selectedPosition).getProduct_cart_count();
                     count--;
-                    mProductsList.get(selectedPosition).getListPrice().get(mProductsList.get(selectedPosition).getCustomPosition()).setCart_count(count);
+                    mProductsList.get(selectedPosition).setProduct_cart_count(count);
                     adapterProductsList.notifyDataSetChanged();
-
+                }
+            } else if (method == 6) {
+                JSONObject commandResult = response.getJSONObject("commandResult");
+                if (commandResult.getString("success").equalsIgnoreCase("1")) {
+                    getProducts();
+                } else {
+                    Toast.makeText(context, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (JSONException e) {

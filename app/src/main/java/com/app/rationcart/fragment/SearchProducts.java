@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,14 +21,12 @@ import com.app.rationcart.R;
 import com.app.rationcart.activities.DashboardActivity;
 import com.app.rationcart.adapter.AdapterCustomList;
 import com.app.rationcart.adapter.AdapterProductsList;
-import com.app.rationcart.adapter.AdapterSubcategoriesNames;
 import com.app.rationcart.aynctask.CommonAsyncTaskHashmap;
 import com.app.rationcart.iclasses.HeaderViewManager;
 import com.app.rationcart.interfaces.ApiResponse;
 import com.app.rationcart.interfaces.HeaderViewClickListener;
 import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
-import com.app.rationcart.models.ModelHomeData;
 import com.app.rationcart.models.ModelProducts;
 import com.app.rationcart.models.ModelUnitPrice;
 import com.app.rationcart.utils.AppConstant;
@@ -39,41 +39,41 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FragmentProductsAccToCategory extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
+public class SearchProducts extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
 
-    public static FragmentProductsAccToCategory fragmentHome;
+    public static SearchProducts fragmentHome;
     private Activity context;
-    private ArrayList<ModelHomeData> mSubCategoriesList = new ArrayList<>();
     private ArrayList<ModelProducts> mProductsList = new ArrayList<>();
-    private RecyclerView listSubcategories, listProducts;
+    private RecyclerView listProducts;
     private View view;
-    private String TAG = FragmentProductsAccToCategory.class.getSimpleName();
+    private String TAG = SearchProducts.class.getSimpleName();
     private String categoryId = "";
     private int selectedPosition = 0;
     private AdapterCustomList adapterlist;
     private ListView list_weight;
     private RelativeLayout rl_bottom;
-    AdapterProductsList adapterProductsList;
+    private AdapterProductsList adapterProductsList;
     private TextView mTvNoProduct;
+    private EditText edt_search;
+    private ImageView image_search;
 
-    public static FragmentProductsAccToCategory getInstance() {
+    public static SearchProducts getInstance() {
         if (fragmentHome == null)
-            fragmentHome = new FragmentProductsAccToCategory();
+            fragmentHome = new SearchProducts();
         return fragmentHome;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_products_acc_category, container, false);
+        view = inflater.inflate(R.layout.fragment_search_product, container, false);
         return view;
     }
 
@@ -83,8 +83,7 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
         context = getActivity();
         initViews(view);
         getBundle();
-        manageHeaderView();
-        getProducts();
+      //  manageHeaderView();
         setListener();
     }
 
@@ -97,7 +96,7 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
     private void manageHeaderView() {
 
         HeaderViewManager.getInstance().InitializeHeaderView(null, view, manageHeaderClick());
-        HeaderViewManager.getInstance().setHeading(true, "Products");
+        HeaderViewManager.getInstance().setHeading(true, "Search Products");
         HeaderViewManager.getInstance().setLeftSideHeaderView(true, R.drawable.left_arrow);
         HeaderViewManager.getInstance().setRightSideHeaderView(false, R.drawable.search);
         HeaderViewManager.getInstance().setLogoView(false);
@@ -138,15 +137,25 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
                 rl_bottom.setVisibility(View.GONE);
             }
         });
+
+        image_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!edt_search.getText().toString().equalsIgnoreCase("")) {
+                    getProducts();
+                } else {
+                    Toast.makeText(context, "Please enter something to search", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void getProducts() {
         try {
             if (AppUtils.isNetworkAvailable(context)) {
 
-                // http://stackmindz.com/dev/rationcart/api/categoryproduct.php?cat_id=1
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.CATEGORY_PRODUCT + "cat_id=" + categoryId + "&token=" + AppUtils.getImeiNo(context)
-                        + "&user_id=" + AppUtils.getUserId(context);
+                // http://stackmindz.com/dev/rationcart/api/search.php?keyword=fruit
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.SEARCH + "keyword=" + edt_search.getText().toString();
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -177,14 +186,14 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
 
 
     private void initViews(View view) {
-        listSubcategories = view.findViewById(R.id.list_subcategories);
         listProducts = view.findViewById(R.id.list_products);
         list_weight = view.findViewById(R.id.spinner_list);
         rl_bottom = view.findViewById(R.id.rl_bottom);
-        listSubcategories.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         listProducts.setLayoutManager(new LinearLayoutManager(context));
         listProducts.setNestedScrollingEnabled(false);
         mTvNoProduct = view.findViewById(R.id.mTvNoProduct);
+        image_search = view.findViewById(R.id.image_search);
+        edt_search = view.findViewById(R.id.edt_search);
     }
 
     @Override
@@ -213,14 +222,6 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
             Log.e(" pro", "****" + mProductsList.get(selectedPosition).getCustomPosition());
             adapterProductsList.notifyItemChanged(selectedPosition);
             rl_bottom.setVisibility(View.GONE);
-        } else if (flag == 21) {
-            selectedPosition = position;
-            FragmentProductsAccToSubCategory fragment = new FragmentProductsAccToSubCategory();
-            Bundle bundle = new Bundle();
-            bundle.putString("id", mSubCategoriesList.get(position).getSubCategoryId());
-            fragment.setArguments(bundle);
-            DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragment, true);
-
         } else if (flag == 22) {
             selectedPosition = position;
             FragmentProductsDetail fragment = new FragmentProductsDetail();
@@ -295,19 +296,7 @@ public class FragmentProductsAccToCategory extends BaseFragment implements OnCus
     private void setData(JSONObject data) {
         try {
 
-            JSONArray categories = data.getJSONArray("subcategories");
-            for (int i = 0; i < categories.length(); i++) {
-                JSONObject jo = categories.getJSONObject(i);
-                ModelHomeData modelHomeData = new ModelHomeData();
-                modelHomeData.setSubCategoryId(jo.getString("SubCategoryId"));
-                modelHomeData.setSubCategoryImage(jo.getString("SubCategoryImage"));
-                modelHomeData.setSubCategoryName(jo.getString("SubCategoryName"));
-                mSubCategoriesList.add(modelHomeData);
-            }
-            AdapterSubcategoriesNames adapterHomeCategories = new AdapterSubcategoriesNames(context, this, mSubCategoriesList);
-            listSubcategories.setAdapter(adapterHomeCategories);
-
-            JSONArray product = data.getJSONArray("product");
+            JSONArray product = data.getJSONArray("search");
             for (int i = 0; i < product.length(); i++) {
                 JSONObject jo = product.getJSONObject(i);
                 ModelProducts modelProducts = new ModelProducts();

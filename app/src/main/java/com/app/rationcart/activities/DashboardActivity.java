@@ -32,10 +32,13 @@ import com.app.rationcart.fragment.BaseFragment;
 import com.app.rationcart.fragment.FragmentCartList;
 import com.app.rationcart.fragment.FragmentCategoriesList;
 import com.app.rationcart.fragment.FragmentHome;
+import com.app.rationcart.fragment.FragmentNotification;
 import com.app.rationcart.fragment.FragmentOrderHistory;
 import com.app.rationcart.fragment.FragmentProductsAccToCategory;
 import com.app.rationcart.fragment.FragmentProductsAccToSubCategory;
 import com.app.rationcart.fragment.FragmentSelectAddress;
+import com.app.rationcart.fragment.Offers;
+import com.app.rationcart.fragment.SearchProducts;
 import com.app.rationcart.interfaces.GlobalConstants;
 import com.app.rationcart.models.DrawerListModel;
 import com.app.rationcart.utils.AppConstant;
@@ -257,6 +260,13 @@ public class DashboardActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
             }
         });
+        mTVNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentNotification(), true);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
         mTvLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -327,11 +337,11 @@ public class DashboardActivity extends AppCompatActivity {
                 image_offer.setImageResource(R.drawable.offer_orange);
                 text_offer.setTextColor(getResources().getColor(R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_OFFERS_BAR).size() > 0) {
-                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome))
+                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof Offers))
                         AppUtils.showErrorLog(TAG, "Offer clicked");
                     activeOfferFragment();
                 } else
-                    pushFragments(GlobalConstants.TAB_OFFERS_BAR, new FragmentHome(), true);
+                    pushFragments(GlobalConstants.TAB_OFFERS_BAR, new Offers(), true);
 
             }
         });
@@ -359,11 +369,11 @@ public class DashboardActivity extends AppCompatActivity {
                 image_search.setImageResource(R.drawable.search_orange);
                 text_search.setTextColor(getResources().getColor(R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_SEARCH_BAR).size() > 0) {
-                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome))
+                    if (!(mStacks.get(mCurrentTab).lastElement() instanceof SearchProducts))
                         AppUtils.showErrorLog(TAG, "search clicked");
                     activeSearchFragment();
                 } else
-                    pushFragments(GlobalConstants.TAB_SEARCH_BAR, new FragmentHome(), true);
+                    pushFragments(GlobalConstants.TAB_SEARCH_BAR, new SearchProducts(), true);
 
             }
         });
@@ -546,8 +556,8 @@ public class DashboardActivity extends AppCompatActivity {
 
                         if (mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList ||
-                                mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
-                                mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome) {
+                                mStacks.get(mCurrentTab).lastElement() instanceof SearchProducts ||
+                                mStacks.get(mCurrentTab).lastElement() instanceof Offers) {
                             manageHeaderVisibitlity(true);
                             manageFooterVisibitlity(true);
                         } else {

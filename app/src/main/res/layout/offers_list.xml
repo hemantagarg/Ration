@@ -6,23 +6,11 @@
     android:clickable="true"
     tools:context="com.app.rationcart.fragment.FragmentHome">
 
-    <include
-        android:id="@+id/header"
-        layout="@layout/header_layout" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
         android:orientation="vertical">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_subcategories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_products"
@@ -34,15 +22,16 @@
 
     </LinearLayout>
 
-    <TextView android:id="@+id/mTvNoProduct"
+    <TextView
+        android:id="@+id/mTvNoProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:padding="@dimen/dp10"
-        android:text="No Product Found"
-        android:visibility="visible"
+        android:text="No Offers Found"
         android:textColor="@color/textcolordark"
-        android:textSize="@dimen/text_size_14" />
+        android:textSize="@dimen/text_size_14"
+        android:visibility="visible" />
 
     <include layout="@layout/incude_list" />
 </RelativeLayout>

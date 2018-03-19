@@ -6,22 +6,39 @@
     android:clickable="true"
     tools:context="com.app.rationcart.fragment.FragmentHome">
 
-    <include
-        android:id="@+id/header"
-        layout="@layout/header_layout" />
-
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_subcategories"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible" />
+            android:layout_margin="@dimen/dp10"
+            android:background="@color/white"
+            android:padding="@dimen/dp5">
+
+            <EditText
+                android:id="@+id/edt_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="Search Product"
+                android:padding="5dp"
+                android:textColor="@color/textcolordark"
+                android:textSize="@dimen/text_size_14" />
+
+
+            <ImageView
+                android:id="@+id/image_search"
+                android:layout_width="@dimen/dp25"
+                android:layout_height="@dimen/dp25"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/dp5"
+                android:src="@drawable/search_grey" />
+        </RelativeLayout>
 
 
         <android.support.v7.widget.RecyclerView
@@ -34,15 +51,16 @@
 
     </LinearLayout>
 
-    <TextView android:id="@+id/mTvNoProduct"
+    <TextView
+        android:id="@+id/mTvNoProduct"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:padding="@dimen/dp10"
         android:text="No Product Found"
-        android:visibility="visible"
         android:textColor="@color/textcolordark"
-        android:textSize="@dimen/text_size_14" />
+        android:textSize="@dimen/text_size_14"
+        android:visibility="visible" />
 
     <include layout="@layout/incude_list" />
 </RelativeLayout>

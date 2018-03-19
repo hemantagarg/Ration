@@ -17,7 +17,9 @@ public interface JsonApiHelper {
     String ADD_ADDRESS = "addAddress?";
     String GET_ADDRESS = "getAddress?";
     String GET_ORDERS = "orderhistory?";
+    String NOTIFICATION_LIST = "notification-list.php?";
     String CATEGORY_PRODUCT = "categoryproduct.php?";
+    String SEARCH = "search.php?";
     String SUBCATEGORY_PRODUCT = "subcategoryproduct.php?";
     String SUBTOSUBCATEGORY_PRODUCT = "subtosubcatproduct.php?";
     String CART_PRODUCT = "cartproduct.php?";

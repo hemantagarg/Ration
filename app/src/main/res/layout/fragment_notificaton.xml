@@ -17,12 +17,6 @@
         android:layout_below="@+id/header"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_subcategories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible" />
-
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_products"
@@ -39,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:padding="@dimen/dp10"
-        android:text="No Product Found"
+        android:text="No Notification Found"
         android:visibility="visible"
         android:textColor="@color/textcolordark"
         android:textSize="@dimen/text_size_14" />

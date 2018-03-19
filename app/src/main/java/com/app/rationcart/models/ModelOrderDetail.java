@@ -18,9 +18,9 @@ public class ModelOrderDetail {
 
     private String quantity;
 
-    private String fname;
+    private String fname, CreateDate, Message, NotificationId;
 
-    private String orderId,dataJson;
+    private String orderId, dataJson;
 
     private String mobile;
     private int rowType = 1;
@@ -117,63 +117,51 @@ public class ModelOrderDetail {
 
     private String productId;
 
-    public String getUnit_value ()
-    {
+    public String getUnit_value() {
         return unit_value;
     }
 
-    public void setUnit_value (String unit_value)
-    {
+    public void setUnit_value(String unit_value) {
         this.unit_value = unit_value;
     }
 
-    public String getImage ()
-    {
+    public String getImage() {
         return image;
     }
 
-    public void setImage (String image)
-    {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public String getProductName ()
-    {
+    public String getProductName() {
         return productName;
     }
 
-    public void setProductName (String productName)
-    {
+    public void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public String getProductQuanitity ()
-    {
+    public String getProductQuanitity() {
         return productQuanitity;
     }
 
-    public void setProductQuanitity (String productQuanitity)
-    {
+    public void setProductQuanitity(String productQuanitity) {
         this.productQuanitity = productQuanitity;
     }
 
-    public String getProductPrice ()
-    {
+    public String getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice (String productPrice)
-    {
+    public void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
     }
 
-    public String getProductId ()
-    {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId (String productId)
-    {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -183,5 +171,29 @@ public class ModelOrderDetail {
 
     public void setDataJson(String dataJson) {
         this.dataJson = dataJson;
+    }
+
+    public String getCreateDate() {
+        return CreateDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        CreateDate = createDate;
+    }
+
+    public String getMessage() {
+        return Message;
+    }
+
+    public void setMessage(String message) {
+        Message = message;
+    }
+
+    public String getNotificationId() {
+        return NotificationId;
+    }
+
+    public void setNotificationId(String notificationId) {
+        NotificationId = notificationId;
     }
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -63,7 +62,7 @@ public class DashboardActivity extends AppCompatActivity {
     private LinearLayout mRlBack;
     private static final String TAG = DashboardActivity.class.getSimpleName();
     private Context context;
-    private AppBarLayout appBar;
+    private Toolbar toolbar;
     private LinkedHashMap<String, List<DrawerListModel>> alldata;
     private ArrayList<String> groupnamelist;
     private ArrayList<String> groupnamelistId;
@@ -128,14 +127,13 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar  =(Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        appBar = (AppBarLayout) findViewById(R.id.appBar);
         alldata = new LinkedHashMap<>();
         groupnamelist = new ArrayList<>();
         groupnamelistId = new ArrayList<>();
@@ -365,15 +363,15 @@ public class DashboardActivity extends AppCompatActivity {
         rl_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                unSelectImages();
+            /*    unSelectImages();
                 image_search.setImageResource(R.drawable.search_orange);
                 text_search.setTextColor(getResources().getColor(R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_SEARCH_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof SearchProducts))
                         AppUtils.showErrorLog(TAG, "search clicked");
                     activeSearchFragment();
-                } else
-                    pushFragments(GlobalConstants.TAB_SEARCH_BAR, new SearchProducts(), true);
+                } else*/
+                pushFragments(AppConstant.CURRENT_SELECTED_TAB, new SearchProducts(), true);
 
             }
         });
@@ -556,7 +554,6 @@ public class DashboardActivity extends AppCompatActivity {
 
                         if (mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList ||
-                                mStacks.get(mCurrentTab).lastElement() instanceof SearchProducts ||
                                 mStacks.get(mCurrentTab).lastElement() instanceof Offers) {
                             manageHeaderVisibitlity(true);
                             manageFooterVisibitlity(true);
@@ -591,9 +588,9 @@ public class DashboardActivity extends AppCompatActivity {
 
     public void manageHeaderVisibitlity(boolean isVisible) {
         if (isVisible) {
-            appBar.setVisibility(View.VISIBLE);
+            toolbar.setVisibility(View.VISIBLE);
         } else {
-            appBar.setVisibility(View.GONE);
+            toolbar.setVisibility(View.GONE);
         }
     }
 

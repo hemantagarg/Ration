@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.app.rationcart.R;
 import com.app.rationcart.activities.DashboardActivity;
@@ -47,6 +48,8 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
     private ArrayList<ModelHomeData> mDealsList = new ArrayList<>();
     private ArrayList<ModelHomeData> mBrandsList = new ArrayList<>();
     private RecyclerView list_categories, list_topdeals, list_topbrands;
+    private TextView edt_search;
+    private ImageView image_search;
 
     public static FragmentHome getInstance() {
         if (fragmentHome == null)
@@ -59,7 +62,7 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
         super.onResume();
         DashboardActivity.getInstance().manageFooterVisibitlity(true);
         DashboardActivity.getInstance().manageHeaderVisibitlity(true);
-      //  pagerMove();
+        //  pagerMove();
     }
 
     @Override
@@ -108,6 +111,12 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
             }
         });
 
+        edt_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, new SearchProducts(), true);
+            }
+        });
     }
 
     private void setData() {
@@ -171,9 +180,10 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
     }
 
     private void initViews(View view) {
-        mViewPager = (ViewPager) view.findViewById(R.id.pager);
-        pager_indicator = (LinearLayout) view.findViewById(R.id.viewPagerCountDots);
-
+        mViewPager = view.findViewById(R.id.pager);
+        pager_indicator = view.findViewById(R.id.viewPagerCountDots);
+        image_search = view.findViewById(R.id.image_search);
+        edt_search = view.findViewById(R.id.edt_search);
         list_categories = view.findViewById(R.id.list_categories);
         list_topbrands = view.findViewById(R.id.list_topbrands);
         list_topdeals = view.findViewById(R.id.list_topdeals);

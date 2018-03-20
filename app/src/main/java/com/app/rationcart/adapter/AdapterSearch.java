@@ -12,21 +12,21 @@ import android.widget.TextView;
 
 import com.app.rationcart.R;
 import com.app.rationcart.interfaces.OnCustomItemClicListener;
-import com.app.rationcart.models.ModelOrderDetail;
+import com.app.rationcart.models.ModelHomeData;
 
 import java.util.ArrayList;
 
 
-public class AdapterNotificatonList extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class AdapterSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    ArrayList<ModelOrderDetail> detail;
+    ArrayList<ModelHomeData> detail;
     Context mContext;
     OnCustomItemClicListener listener;
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
 
 
-    public AdapterNotificatonList(Context context, OnCustomItemClicListener lis, ArrayList<ModelOrderDetail> list) {
+    public AdapterSearch(Context context, OnCustomItemClicListener lis, ArrayList<ModelHomeData> list) {
 
         this.detail = list;
         this.mContext = context;
@@ -41,7 +41,7 @@ public class AdapterNotificatonList extends RecyclerView.Adapter<RecyclerView.Vi
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
             View v = LayoutInflater.from(parent.getContext()).inflate(
-                    R.layout.row_notification_list, parent, false);
+                    R.layout.row_search, parent, false);
 
             vh = new CustomViewHolder(v);
         } else {
@@ -71,10 +71,10 @@ public class AdapterNotificatonList extends RecyclerView.Adapter<RecyclerView.Vi
 
         if (holder instanceof CustomViewHolder) {
 
-            ModelOrderDetail m1 = detail.get(position);
+            ModelHomeData m1 = detail.get(position);
 
-            ((CustomViewHolder) holder).text_message.setText(m1.getMessage());
-            ((CustomViewHolder) holder).text_date.setText(m1.getCreateDate());
+            ((CustomViewHolder) holder).text_message.setText(m1.getCategoryName());
+            //((CustomViewHolder) holder).text_date.setText(m1.getCreateDate());
 
         } else {
             ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
@@ -110,7 +110,7 @@ public class AdapterNotificatonList extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        ModelOrderDetail m1 = detail.get(position);
+        ModelHomeData m1 = detail.get(position);
         if (m1.getRowType() == 1) {
             return VIEW_ITEM;
         } else if (m1.getRowType() == 2) {

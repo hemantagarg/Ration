@@ -6,7 +6,8 @@ package com.app.rationcart.models;
 
 public class ModelHomeData {
 
-    private String CategoryName, CategoryImage, CategoryId, SubCategoryId, SubCategoryImage, SubCategoryName, bannerImage, bannerId;
+    private String CategoryName, CategoryImage, CategoryId, SubCategoryId,
+            SubCategoryImage, SubCategoryName, bannerImage, bannerId,type;
     private int rowType = 1;
 
     public String getCategoryName() {
@@ -79,5 +80,13 @@ public class ModelHomeData {
 
     public void setRowType(int rowType) {
         this.rowType = rowType;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

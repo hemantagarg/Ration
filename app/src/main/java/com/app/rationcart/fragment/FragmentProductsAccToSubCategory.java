@@ -98,7 +98,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
         HeaderViewManager.getInstance().InitializeHeaderView(null, view, manageHeaderClick());
         HeaderViewManager.getInstance().setHeading(true, "Products");
         HeaderViewManager.getInstance().setLeftSideHeaderView(true, R.drawable.left_arrow);
-        HeaderViewManager.getInstance().setRightSideHeaderView(false, R.drawable.search);
+        HeaderViewManager.getInstance().setRightSideHeaderView(true, R.drawable.cart_white);
         HeaderViewManager.getInstance().setLogoView(false);
 
     }
@@ -117,6 +117,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
 
             @Override
             public void onClickOfHeaderRightView() {
+                DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB,new FragmentCartList(),true);
                 //   Toast.makeText(mActivity, "Coming Soon", Toast.LENGTH_SHORT).show();
             }
         };

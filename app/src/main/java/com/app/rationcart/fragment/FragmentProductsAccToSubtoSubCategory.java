@@ -98,7 +98,7 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
         HeaderViewManager.getInstance().InitializeHeaderView(null, view, manageHeaderClick());
         HeaderViewManager.getInstance().setHeading(true, "Products");
         HeaderViewManager.getInstance().setLeftSideHeaderView(true, R.drawable.left_arrow);
-        HeaderViewManager.getInstance().setRightSideHeaderView(false, R.drawable.search);
+        HeaderViewManager.getInstance().setRightSideHeaderView(true, R.drawable.cart_white);
         HeaderViewManager.getInstance().setLogoView(false);
 
     }
@@ -117,7 +117,7 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
 
             @Override
             public void onClickOfHeaderRightView() {
-                //   Toast.makeText(mActivity, "Coming Soon", Toast.LENGTH_SHORT).show();
+                DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentCartList(), true);
             }
         };
     }
@@ -264,9 +264,9 @@ public class FragmentProductsAccToSubtoSubCategory extends BaseFragment implemen
             adapterProductsList = new AdapterProductsList(context, this, mProductsList);
             listProducts.setAdapter(adapterProductsList);
 
-            if (mProductsList.size()>0){
+            if (mProductsList.size() > 0) {
                 mTvNoProduct.setVisibility(View.GONE);
-            }else {
+            } else {
                 mTvNoProduct.setVisibility(View.VISIBLE);
             }
 

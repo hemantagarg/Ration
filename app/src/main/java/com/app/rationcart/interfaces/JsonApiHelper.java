@@ -15,6 +15,8 @@ public interface JsonApiHelper {
     String FORGOT = "forgetPassword";
     String CATEGORIES = "category.php?";
     String ADD_ADDRESS = "addAddress?";
+    String CITY = "city";
+    String GET_PINCODE = "getpincode?";
     String GET_ADDRESS = "getAddress?";
     String GET_ORDERS = "orderhistory?";
     String NOTIFICATION_LIST = "notification-list.php?";

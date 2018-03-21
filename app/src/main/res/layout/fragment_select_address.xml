@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp10"
-            android:text="230 Rs"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_14" />
 

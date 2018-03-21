@@ -3,8 +3,11 @@ package com.app.rationcart.activities;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,8 +20,11 @@ import com.app.rationcart.interfaces.HeaderViewClickListener;
 import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.utils.AppUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class AddAddress extends Activity implements ApiResponse {
 
@@ -28,6 +34,10 @@ public class AddAddress extends Activity implements ApiResponse {
     private String name, lastname, address1, address2, landmark, zipcode, mobile;
     private Activity context;
     private Button btn_Save;
+    private ArrayList<String> cityListNames = new ArrayList<>();
+    private ArrayList<String> cityListId = new ArrayList<>();
+    private Spinner spinner_city;
+    private ArrayAdapter<String> adapterCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,7 @@ public class AddAddress extends Activity implements ApiResponse {
         context = this;
         init();
         manageHeaderView();
+        getCityList();
         setListener();
         txt_mobileno.setText(AppUtils.getUserMobile(context));
         mEtEmail.setText(AppUtils.getUseremail(context));
@@ -48,7 +59,7 @@ public class AddAddress extends Activity implements ApiResponse {
         txt_mobileno = findViewById(R.id.add_phone_number);
         txt_name = findViewById(R.id.add_name);
         txt_lastname = findViewById(R.id.add_lastname);
-
+        spinner_city = findViewById(R.id.spinner_city);
         txt_zipcode = findViewById(R.id.add_zipcode);
         mEtEmail = findViewById(R.id.mEtEmail);
         btn_Save = findViewById(R.id.btn_Save);
@@ -97,8 +108,53 @@ public class AddAddress extends Activity implements ApiResponse {
                 }
             }
         });
+        spinner_city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                if (position != 0) {
+                    getLocality(cityListId.get(position));
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
+
+    private void getCityList() {
+
+        //http://stackmindz.com/dev/rationcart/api/city
+        try {
+            if (AppUtils.isNetworkAvailable(context)) {
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.CITY;
+                new CommonAsyncTaskHashmap(2, context, this).getqueryJsonbjectNoProgress(url, null, Request.Method.GET);
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getLocality(String cityId) {
+
+        // http://stackmindz.com/dev/rationcart/api/getpincode?city_id=2
+        try {
+            if (AppUtils.isNetworkAvailable(context)) {
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.GET_PINCODE + "city_id=" + cityId;
+                new CommonAsyncTaskHashmap(3, context, this).getqueryJsonbjectNoProgress(url, null, Request.Method.GET);
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void saveAdddress() {
 
@@ -178,7 +234,6 @@ public class AddAddress extends Activity implements ApiResponse {
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
 
                     setResult(512);
-
                     txt_name.setText("");
                     txt_lastname.setText("");
                     txt_address2.setText("");
@@ -186,14 +241,35 @@ public class AddAddress extends Activity implements ApiResponse {
                     txt_address1.setText("");
                     txt_mobileno.setText("");
                     txt_landmark.setText("");
-
                     finish();
-
                 } else {
-                    Toast.makeText(context, commandResult.getString("message"),
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
                 }
+            } else if (method == 2) {
+                JSONObject commandResult = jObject
+                        .getJSONObject("commandResult");
+                if (commandResult.getString("success").equalsIgnoreCase("1")) {
+                    JSONObject data = commandResult.getJSONObject("data");
+                    JSONArray cities = data.getJSONArray("cities");
 
+                    cityListId.add("-1");
+                    cityListNames.add("Select City");
+                    for (int i = 0; i < cities.length(); i++) {
+                        JSONObject jo = cities.getJSONObject(i);
+                        cityListId.add(jo.getString("cityId"));
+                        cityListNames.add(jo.getString("cityName"));
+                    }
+                    adapterCity = new ArrayAdapter<String>(context, R.layout.row_spinner, R.id.textview, cityListNames);
+                    spinner_city.setAdapter(adapterCity);
+                }
+            }else if (method == 3) {
+                JSONObject commandResult = jObject
+                        .getJSONObject("commandResult");
+                if (commandResult.getString("success").equalsIgnoreCase("1")) {
+                    JSONObject data = commandResult.getJSONObject("data");
+
+
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

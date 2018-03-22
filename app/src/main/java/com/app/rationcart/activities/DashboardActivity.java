@@ -75,7 +75,8 @@ public class DashboardActivity extends AppCompatActivity {
     private String mCurrentTab;
     private RelativeLayout rl_home, rl_category, rl_search, rl_offers, rl_cart;
     private ImageView image_home, image_category, image_search, image_offer, image_cart;
-    private TextView text_home, text_category, text_search, text_offer, text_cart, mTvLogin, mTVLogout, mTvOrderHistory;
+    private TextView text_home, text_category, text_search, text_offer,
+            text_cart, mTvLogin, mTVLogout, mTvOrderHistory, mTvAddress;
     private DrawerLayout drawer;
 
     /***********************************************
@@ -118,16 +119,18 @@ public class DashboardActivity extends AppCompatActivity {
             mTvUserName.setVisibility(View.GONE);
             mTVLogout.setVisibility(View.GONE);
             mTvOrderHistory.setVisibility(View.GONE);
+            mTvAddress.setVisibility(View.GONE);
         } else {
             mTvLogin.setVisibility(View.GONE);
             mTvUserName.setVisibility(View.VISIBLE);
             mTVLogout.setVisibility(View.VISIBLE);
             mTvOrderHistory.setVisibility(View.VISIBLE);
+            mTvAddress.setVisibility(View.VISIBLE);
         }
     }
 
     private void initViews() {
-        toolbar  =(Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -178,6 +181,7 @@ public class DashboardActivity extends AppCompatActivity {
         mTvLogin = (TextView) findViewById(R.id.mTvLogin);
         mTVLogout = (TextView) findViewById(R.id.mTVLogout);
         mTvOrderHistory = (TextView) findViewById(R.id.mTvOrderHistory);
+        mTvAddress = (TextView) findViewById(R.id.mTvAddress);
 
     }
 
@@ -258,6 +262,16 @@ public class DashboardActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
             }
         });
+
+        mTvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AddAddress.class);
+                startActivity(intent);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        });
+
         mTVNotifications.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

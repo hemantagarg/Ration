@@ -55,7 +55,7 @@ import java.util.Stack;
 public class DashboardActivity extends AppCompatActivity {
 
     private RelativeLayout rl_top;
-    private TextView mTvUserName, mTvHome, mTvAccount, mTvCategoies, mTvOffers, mTVNotifications, mTVShare, mTVRate;
+    private TextView mTvUserName, mTvHome, mTvAccount, mTvCategoies, mTvOffers,mTvDeliveryAdd, mTVNotifications, mTVShare, mTVRate;
     private ExpandableListView expendableView;
     private ScrollView mScrollview;
     private Animation anim;
@@ -146,6 +146,7 @@ public class DashboardActivity extends AppCompatActivity {
         mTvAccount = (TextView) findViewById(R.id.mTvAccount);
         mTvCategoies = (TextView) findViewById(R.id.mTvCategoies);
         mTvOffers = (TextView) findViewById(R.id.mTvOffers);
+        mTvDeliveryAdd = (TextView) findViewById(R.id.mTvDeliveryAdd);
         mTVNotifications = (TextView) findViewById(R.id.mTVNotifications);
         mTVShare = (TextView) findViewById(R.id.mTVShare);
         mTVRate = (TextView) findViewById(R.id.mTVRate);
@@ -276,6 +277,12 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentNotification(), true);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        }); mTvDeliveryAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentSelectAddress(), true);
                 drawer.closeDrawer(GravityCompat.START);
             }
         });

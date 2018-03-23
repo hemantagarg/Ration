@@ -75,6 +75,7 @@ public class AdapterAddressList extends RecyclerView.Adapter<RecyclerView.ViewHo
             ModelAddressDetail m1 = detail.get(position);
 
             ((CustomViewHolder) holder).text_address.setText(m1.getAddress());
+            ((CustomViewHolder) holder).mobilenumber.setText(m1.getMobileno());
             ((CustomViewHolder) holder).text_name.setText(m1.getName() + "  " + m1.getMobileno());
             ((CustomViewHolder) holder).text_zipcode.setText(m1.getCity() + "  " + m1.getZipcode());
             if (m1.getSelection_position() == 1) {
@@ -109,7 +110,7 @@ public class AdapterAddressList extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public class CustomViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView text_name, text_address, text_zipcode;
+        TextView text_name, text_address, text_zipcode,mobilenumber;
         ImageView delete, radio_button;
 
         public CustomViewHolder(View view) {
@@ -119,6 +120,7 @@ public class AdapterAddressList extends RecyclerView.Adapter<RecyclerView.ViewHo
                     .findViewById(R.id.address1);
             this.delete = view.findViewById(R.id.delete);
             this.text_name = view.findViewById(R.id.txt_name);
+            this.mobilenumber = view.findViewById(R.id.mobilenumber);
             this.text_zipcode = view
                     .findViewById(R.id.zipcode1);
             this.radio_button = view.findViewById(R.id.bubble);

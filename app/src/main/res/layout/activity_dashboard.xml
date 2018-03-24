@@ -228,6 +228,17 @@
                             android:textColor="@color/textcolordark"
                             android:textSize="@dimen/text_size_17"
                             android:visibility="visible" />
+                        <TextView
+                            android:id="@+id/mTvDeliveryAdd"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/dp15"
+                            android:paddingLeft="@dimen/dp20"
+                            android:paddingTop="@dimen/dp15"
+                            android:text="Delivery Address"
+                            android:textColor="@color/textcolordark"
+                            android:textSize="@dimen/text_size_17"
+                            android:visibility="visible" />
 
                         <TextView
                             android:id="@+id/mTChangePassword"

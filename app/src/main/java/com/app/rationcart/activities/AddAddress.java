@@ -36,8 +36,12 @@ public class AddAddress extends Activity implements ApiResponse {
     private Button btn_Save;
     private ArrayList<String> cityListNames = new ArrayList<>();
     private ArrayList<String> cityListId = new ArrayList<>();
-    private Spinner spinner_city;
+    private ArrayList<String> zipListNames = new ArrayList<>();
+    private ArrayList<String> zipListId = new ArrayList<>();
+    private Spinner spinner_city, spinner_zipcode;
     private ArrayAdapter<String> adapterCity;
+    private ArrayAdapter<String> adapterzipcode;
+    String SelctZipCode = "", SelectCityId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,7 @@ public class AddAddress extends Activity implements ApiResponse {
         txt_name = findViewById(R.id.add_name);
         txt_lastname = findViewById(R.id.add_lastname);
         spinner_city = findViewById(R.id.spinner_city);
+        spinner_zipcode = findViewById(R.id.spinner_zipcode);
         txt_zipcode = findViewById(R.id.add_zipcode);
         mEtEmail = findViewById(R.id.mEtEmail);
         btn_Save = findViewById(R.id.btn_Save);
@@ -104,10 +109,14 @@ public class AddAddress extends Activity implements ApiResponse {
             @Override
             public void onClick(View v) {
                 if (isValidLoginDetails()) {
-                    if (spinner_city.getSelectedItemPosition() != 0) {
+                    if (spinner_city.getSelectedItemPosition() != 0 && spinner_zipcode.getSelectedItemPosition() != 0) {
                         saveAdddress();
                     } else {
-                        Toast.makeText(context, "Please select city", Toast.LENGTH_SHORT).show();
+                        if (spinner_city.getSelectedItemPosition() == 0) {
+                            Toast.makeText(context, "Please select city", Toast.LENGTH_SHORT).show();
+                        } else if (spinner_zipcode.getSelectedItemPosition() == 0) {
+                            Toast.makeText(context, "Please select zipcodes", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -132,6 +141,7 @@ public class AddAddress extends Activity implements ApiResponse {
     private void getCityList() {
 
         //http://stackmindz.com/dev/rationcart/api/city
+
         try {
             if (AppUtils.isNetworkAvailable(context)) {
                 String url = JsonApiHelper.BASEURL + JsonApiHelper.CITY;
@@ -161,17 +171,19 @@ public class AddAddress extends Activity implements ApiResponse {
 
 
     private void saveAdddress() {
+        int selectedserviceposition = spinner_zipcode.getSelectedItemPosition();
+        SelctZipCode = zipListId.get(selectedserviceposition);
+        int selectedservicecityposition = spinner_city.getSelectedItemPosition();
+        SelectCityId = cityListId.get(selectedservicecityposition);
 
-        //http://stackmindz.com/dev/rationcart/api/addAddress?user_id=2&address=dadas&
-        // city_id=3&area=2&pincode=5545545
-        // &email=sfsfs@gmail.com&mobile=8778778787&fname=dd&lname=dd&token=
+
         try {
             if (AppUtils.isNetworkAvailable(context)) {
                 String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_ADDRESS + "user_id=" + AppUtils.getUserId(context) + "&address="
-                        + txt_address1.getText().toString() + txt_address2.getText().toString() + "&pincode=" + txt_zipcode.getText().toString()
+                        + txt_address1.getText().toString() + txt_address2.getText().toString() + "&pincode=" + zipListId.get(selectedserviceposition) + "&city_id=" + cityListId.get(selectedserviceposition)
                         + "&email=" + mEtEmail.getText().toString() + "&mobile=" + txt_mobileno.getText().toString()
                         + "&fname=" + txt_name.getText().toString() + "&lname=" + txt_lastname.getText().toString()
-                        + "&token=" + AppUtils.getImeiNo(context)+"&city_id="+cityListId.get(spinner_city.getSelectedItemPosition());
+                        + "&token=" + AppUtils.getImeiNo(context);
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbjectNoProgress(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -198,10 +210,10 @@ public class AddAddress extends Activity implements ApiResponse {
             if (mobile.length() < 10) {
                 isValidLoginDetails = false;
                 Toast.makeText(context, R.string.mobileno_Length, Toast.LENGTH_SHORT).show();
-            } else if (zipcode.length() < 6) {
+            }/* else if (zipcode.length() < 6) {
                 isValidLoginDetails = false;
                 Toast.makeText(context, R.string.enter_valid_zipcode, Toast.LENGTH_SHORT).show();
-            } else {
+            } */ else {
                 isValidLoginDetails = true;
             }
 
@@ -221,10 +233,10 @@ public class AddAddress extends Activity implements ApiResponse {
             } else if (landmark.equalsIgnoreCase("")) {
                 isValidLoginDetails = false;
                 Toast.makeText(context, R.string.enter_landmark, Toast.LENGTH_SHORT).show();
-            } else if (zipcode.equalsIgnoreCase("")) {
+            }/* else if (zipcode.equalsIgnoreCase("")) {
                 isValidLoginDetails = false;
                 Toast.makeText(context, R.string.enter_zipcode, Toast.LENGTH_SHORT).show();
-            }
+            }*/
         }
 
         return isValidLoginDetails;
@@ -272,8 +284,16 @@ public class AddAddress extends Activity implements ApiResponse {
                         .getJSONObject("commandResult");
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
                     JSONObject data = commandResult.getJSONObject("data");
-
-
+                    JSONArray cities = data.getJSONArray("pincode");
+                    zipListId.add("-1");
+                    cityListNames.add("Select Zipcode");
+                    for (int i = 0; i < cities.length(); i++) {
+                        JSONObject jo = cities.getJSONObject(i);
+                        zipListId.add(jo.getString("id"));
+                        zipListNames.add(jo.getString("pincode"));
+                    }
+                    adapterzipcode = new ArrayAdapter<String>(context, R.layout.row_spinner, R.id.textview, zipListNames);
+                    spinner_zipcode.setAdapter(adapterzipcode);
                 }
             }
         } catch (JSONException e) {

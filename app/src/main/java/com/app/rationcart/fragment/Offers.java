@@ -62,7 +62,7 @@ public class Offers extends BaseFragment implements OnCustomItemClicListener, Ap
     @Override
     public void onResume() {
         super.onResume();
-
+        DashboardActivity.getInstance().changeMenuHeader("Offers", false);
     }
 
     @Override

@@ -9,6 +9,7 @@
 
     <include
         android:id="@+id/header_layout"
+        android:visibility="gone"
         layout="@layout/header_layout" />
 
     <android.support.v4.widget.NestedScrollView

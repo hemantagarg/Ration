@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -39,6 +40,7 @@ public class FragmentOrderHistory extends BaseFragment implements OnCustomItemCl
     private View view;
     private String TAG = FragmentOrderHistory.class.getSimpleName();
     private AdapterOderList adapterOderList;
+    private TextView mTvNoProduct;
 
     public static FragmentOrderHistory getInstance() {
         if (fragmentHome == null)
@@ -49,8 +51,9 @@ public class FragmentOrderHistory extends BaseFragment implements OnCustomItemCl
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+     /*   DashboardActivity.getInstance().manageFooterVisibitlity(false);
+        DashboardActivity.getInstance().manageHeaderVisibitlity(false);*/
+        DashboardActivity.getInstance().changeMenuHeader("Order History", false);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class FragmentOrderHistory extends BaseFragment implements OnCustomItemCl
         super.onViewCreated(view, savedInstanceState);
         context = getActivity();
         initViews(view);
-        manageHeaderView();
+        //  manageHeaderView();
         setListener();
         getOrders();
     }
@@ -147,6 +150,11 @@ public class FragmentOrderHistory extends BaseFragment implements OnCustomItemCl
             adapterOderList = new AdapterOderList(context, this, mAddressList);
             mRecyclerAddress.setAdapter(adapterOderList);
 
+            if (mAddressList.size() > 0) {
+                mTvNoProduct.setVisibility(View.GONE);
+            } else {
+                mTvNoProduct.setVisibility(View.VISIBLE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,6 +165,7 @@ public class FragmentOrderHistory extends BaseFragment implements OnCustomItemCl
         mRecyclerAddress = view.findViewById(R.id.mRecyclerAddress);
         mRecyclerAddress.setLayoutManager(new LinearLayoutManager(context));
         mRecyclerAddress.setNestedScrollingEnabled(false);
+        mTvNoProduct = view.findViewById(R.id.mTvNoProduct);
     }
 
     @Override

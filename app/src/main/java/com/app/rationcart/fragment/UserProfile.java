@@ -1,8 +1,11 @@
-package com.app.rationcart.activities;
+package com.app.rationcart.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.app.rationcart.R;
+import com.app.rationcart.activities.DashboardActivity;
 import com.app.rationcart.aynctask.CommonAsyncTaskHashmap;
 import com.app.rationcart.iclasses.HeaderViewManager;
 import com.app.rationcart.interfaces.ApiResponse;
@@ -26,7 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class AddAddress extends Activity implements ApiResponse {
+public class UserProfile extends BaseFragment implements ApiResponse {
 
     private EditText txt_name, txt_lastname, txt_mobileno, txt_address1,
             txt_address2, txt_landmark, txt_zipcode, mEtEmail;
@@ -38,31 +42,45 @@ public class AddAddress extends Activity implements ApiResponse {
     private ArrayList<String> cityListId = new ArrayList<>();
     private Spinner spinner_city;
     private ArrayAdapter<String> adapterCity;
+    private View view;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.content_profile, container, false);
+        return view;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_add_address);
-        context = this;
-        init();
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        context = getActivity();
+        init(view);
         manageHeaderView();
         getCityList();
+
         setListener();
         txt_mobileno.setText(AppUtils.getUserMobile(context));
         mEtEmail.setText(AppUtils.getUseremail(context));
     }
 
-    private void init() {
-        txt_address1 = findViewById(R.id.add_addressline1);
-        txt_address2 = findViewById(R.id.add_addressline2);
-        txt_landmark = findViewById(R.id.add_landmark);
-        txt_mobileno = findViewById(R.id.add_phone_number);
-        txt_name = findViewById(R.id.add_name);
-        txt_lastname = findViewById(R.id.add_lastname);
-        spinner_city = findViewById(R.id.spinner_city);
-        txt_zipcode = findViewById(R.id.add_zipcode);
-        mEtEmail = findViewById(R.id.mEtEmail);
-        btn_Save = findViewById(R.id.btn_Save);
+    @Override
+    public void onResume() {
+        super.onResume();
+        DashboardActivity.getInstance().changeMenuHeader("Profile", false);
+    }
+
+    private void init(View view) {
+        txt_address1 = view.findViewById(R.id.add_addressline1);
+        txt_address2 = view.findViewById(R.id.add_addressline2);
+        txt_landmark = view.findViewById(R.id.add_landmark);
+        txt_mobileno = view.findViewById(R.id.add_phone_number);
+        txt_name = view.findViewById(R.id.add_name);
+        txt_lastname = view.findViewById(R.id.add_lastname);
+        spinner_city = view.findViewById(R.id.spinner_city);
+        txt_zipcode = view.findViewById(R.id.add_zipcode);
+        mEtEmail = view.findViewById(R.id.mEtEmail);
+        btn_Save = view.findViewById(R.id.btn_Save);
 
     }
 
@@ -73,8 +91,8 @@ public class AddAddress extends Activity implements ApiResponse {
      *******************************************************************/
     private void manageHeaderView() {
 
-        HeaderViewManager.getInstance().InitializeHeaderView(this, null, manageHeaderClick());
-        HeaderViewManager.getInstance().setHeading(true, "Add New Address");
+        HeaderViewManager.getInstance().InitializeHeaderView(null, view, manageHeaderClick());
+        HeaderViewManager.getInstance().setHeading(true, "Profile");
         HeaderViewManager.getInstance().setLeftSideHeaderView(true, R.drawable.left_arrow);
         HeaderViewManager.getInstance().setRightSideHeaderView(false, R.drawable.search);
         HeaderViewManager.getInstance().setLogoView(false);
@@ -89,7 +107,7 @@ public class AddAddress extends Activity implements ApiResponse {
         return new HeaderViewClickListener() {
             @Override
             public void onClickOfHeaderLeftView() {
-                finish();
+                context.onBackPressed();
             }
 
             @Override
@@ -144,6 +162,22 @@ public class AddAddress extends Activity implements ApiResponse {
         }
     }
 
+    private void getProfile() {
+
+        //http://stackmindz.com/dev/rationcart/api/getProfile?user_id=2
+        try {
+            if (AppUtils.isNetworkAvailable(context)) {
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.GET_PROFILE + "user_id=" + AppUtils.getUserId(context);
+                new CommonAsyncTaskHashmap(4, context, this).getqueryJsonbjectNoProgress(url, null, Request.Method.GET);
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private void getLocality(String cityId) {
 
         // http://stackmindz.com/dev/rationcart/api/getpincode?city_id=2
@@ -162,17 +196,16 @@ public class AddAddress extends Activity implements ApiResponse {
 
     private void saveAdddress() {
 
-        //http://stackmindz.com/dev/rationcart/api/addAddress?user_id=2&address=dadas&
-        // city_id=3&area=2&pincode=5545545
-        // &email=sfsfs@gmail.com&mobile=8778778787&fname=dd&lname=dd&token=
+        //http://stackmindz.com/dev/rationcart/api/update-profile?name=sumit
+        // &email=sumit@gmail.com&mobile=7894562351&address=Noida&city=2&pincode=110044&user_id=12
         try {
             if (AppUtils.isNetworkAvailable(context)) {
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_ADDRESS + "user_id=" + AppUtils.getUserId(context) + "&address="
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.UPDATE_PROFILE + "user_id=" + AppUtils.getUserId(context) + "&address="
                         + txt_address1.getText().toString() + txt_address2.getText().toString() + "&pincode=" + txt_zipcode.getText().toString()
                         + "&email=" + mEtEmail.getText().toString() + "&mobile=" + txt_mobileno.getText().toString()
-                        + "&fname=" + txt_name.getText().toString() + "&lname=" + txt_lastname.getText().toString()
-                        + "&token=" + AppUtils.getImeiNo(context)+"&city_id="+cityListId.get(spinner_city.getSelectedItemPosition());
-                new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbjectNoProgress(url, null, Request.Method.GET);
+                        + "&name=" + txt_name.getText().toString() + txt_lastname.getText().toString()
+                        + "&token=" + AppUtils.getImeiNo(context) + "&city=" + cityListId.get(spinner_city.getSelectedItemPosition());
+                new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
             }
@@ -198,7 +231,7 @@ public class AddAddress extends Activity implements ApiResponse {
             if (mobile.length() < 10) {
                 isValidLoginDetails = false;
                 Toast.makeText(context, R.string.mobileno_Length, Toast.LENGTH_SHORT).show();
-            } else if (zipcode.length() < 6) {
+            } else if (zipcode.length() < 5) {
                 isValidLoginDetails = false;
                 Toast.makeText(context, R.string.enter_valid_zipcode, Toast.LENGTH_SHORT).show();
             } else {
@@ -237,16 +270,8 @@ public class AddAddress extends Activity implements ApiResponse {
                 JSONObject commandResult = jObject
                         .getJSONObject("commandResult");
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
-
-                    setResult(512);
-                    txt_name.setText("");
-                    txt_lastname.setText("");
-                    txt_address2.setText("");
-                    txt_zipcode.setText("");
-                    txt_address1.setText("");
-                    txt_mobileno.setText("");
-                    txt_landmark.setText("");
-                    finish();
+                    Toast.makeText(context, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
+                    context.onBackPressed();
                 } else {
                     Toast.makeText(context, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
                 }
@@ -266,6 +291,7 @@ public class AddAddress extends Activity implements ApiResponse {
                     }
                     adapterCity = new ArrayAdapter<String>(context, R.layout.row_spinner, R.id.textview, cityListNames);
                     spinner_city.setAdapter(adapterCity);
+                    getProfile();
                 }
             } else if (method == 3) {
                 JSONObject commandResult = jObject
@@ -273,6 +299,20 @@ public class AddAddress extends Activity implements ApiResponse {
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
                     JSONObject data = commandResult.getJSONObject("data");
 
+                }
+            } else if (method == 4) {
+                JSONObject commandResult = jObject
+                        .getJSONObject("commandResult");
+                if (commandResult.getString("success").equalsIgnoreCase("1")) {
+                    JSONObject data = commandResult.getJSONObject("data");
+
+                    txt_name.setText(data.getString("fname"));
+                    txt_address1.setText(data.getString("address"));
+                    txt_zipcode.setText(data.getString("pincode"));
+                    String cityId = data.getString("city");
+                    if (cityListId.contains(cityId)) {
+                        spinner_city.setSelection(cityListId.indexOf(cityId));
+                    }
 
                 }
             }

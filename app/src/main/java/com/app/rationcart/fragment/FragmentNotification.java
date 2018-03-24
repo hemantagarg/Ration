@@ -50,8 +50,9 @@ public class FragmentNotification extends BaseFragment implements OnCustomItemCl
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+        //  DashboardActivity.getInstance().manageFooterVisibitlity(false);
+        //DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+        DashboardActivity.getInstance().changeMenuHeader("Notification", false);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class FragmentNotification extends BaseFragment implements OnCustomItemCl
         super.onViewCreated(view, savedInstanceState);
         context = getActivity();
         initViews(view);
-        manageHeaderView();
+        // manageHeaderView();
         setListener();
         getNotificatons();
     }

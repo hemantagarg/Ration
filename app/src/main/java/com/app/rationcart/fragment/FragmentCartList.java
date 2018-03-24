@@ -8,11 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,7 +20,6 @@ import com.app.rationcart.R;
 import com.app.rationcart.activities.DashboardActivity;
 import com.app.rationcart.activities.LoginActivity;
 import com.app.rationcart.adapter.AdapterCartList;
-import com.app.rationcart.adapter.AdapterCustomList;
 import com.app.rationcart.aynctask.CommonAsyncTaskHashmap;
 import com.app.rationcart.iclasses.HeaderViewManager;
 import com.app.rationcart.interfaces.ApiResponse;
@@ -38,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class FragmentCartList extends BaseFragment implements OnCustomItemClicListener, ApiResponse {
 
@@ -50,8 +46,6 @@ public class FragmentCartList extends BaseFragment implements OnCustomItemClicLi
     private String TAG = FragmentCartList.class.getSimpleName();
     private String totalPrice = "", finalquantity = "";
     private int selectedPosition = 0;
-    private AdapterCustomList adapterlist;
-    private ListView list_weight;
     private RelativeLayout rl_bottom;
     private AdapterCartList adapterProductsList;
     private TextView mTvTotalAmount;
@@ -65,8 +59,10 @@ public class FragmentCartList extends BaseFragment implements OnCustomItemClicLi
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+        //  DashboardActivity.getInstance().manageFooterVisibitlity(false);
+        // DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+        getProducts();
+        DashboardActivity.getInstance().changeMenuHeader("Review Order", false);
     }
 
     @Override
@@ -83,8 +79,7 @@ public class FragmentCartList extends BaseFragment implements OnCustomItemClicLi
         context = getActivity();
         initViews(view);
         getBundle();
-        manageHeaderView();
-        getProducts();
+        //   manageHeaderView();
         setListener();
     }
 
@@ -242,8 +237,7 @@ public class FragmentCartList extends BaseFragment implements OnCustomItemClicLi
 
     private void initViews(View view) {
         listProducts = view.findViewById(R.id.list_products);
-        list_weight = (ListView) view.findViewById(R.id.spinner_list);
-        rl_bottom = (RelativeLayout) view.findViewById(R.id.rl_bottom);
+        rl_bottom =  view.findViewById(R.id.mRlBottom);
         listProducts.setLayoutManager(new LinearLayoutManager(context));
         listProducts.setNestedScrollingEnabled(false);
         mTvTotalAmount = view.findViewById(R.id.mTvTotalAmount);
@@ -251,30 +245,7 @@ public class FragmentCartList extends BaseFragment implements OnCustomItemClicLi
 
     @Override
     public void onItemClickListener(int position, int flag) {
-        if (flag == 511) {
-            selectedPosition = position;
-            int pos = mProductsList.get(selectedPosition).getCustomPosition();
-
-            ArrayList<HashMap<String, String>> arrayList = mProductsList.get(position).getSetCustomOption();
-            ArrayList<String> list = new ArrayList<>();
-            ArrayList<String> price = new ArrayList<>();
-            ArrayList<String> sprice = new ArrayList<>();
-
-            for (int i = 0; i < arrayList.size(); i++) {
-                list.add(arrayList.get(i).get("unitprice"));
-                sprice.add(arrayList.get(i).get("dis_price"));
-                price.add(arrayList.get(i).get("price"));
-            }
-            adapterlist = new AdapterCustomList(context, this, list, price, sprice, pos);
-            list_weight.setAdapter(adapterlist);
-            rl_bottom.setVisibility(View.VISIBLE);
-        } else if (flag == 11) {
-            mProductsList.get(selectedPosition).setCustomPosition(position);
-            Log.e(" po", "****" + position);
-            Log.e(" pro", "****" + mProductsList.get(selectedPosition).getCustomPosition());
-            adapterProductsList.notifyItemChanged(selectedPosition);
-            rl_bottom.setVisibility(View.GONE);
-        } else if (flag == 5) {
+        if (flag == 5) {
             // delete item from cart
             selectedPosition = position;
             showConfirmtion(mProductsList.get(position).getCartId());

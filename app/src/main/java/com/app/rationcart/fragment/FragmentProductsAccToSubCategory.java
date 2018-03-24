@@ -64,8 +64,9 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+     /*   DashboardActivity.getInstance().manageFooterVisibitlity(false);
+        DashboardActivity.getInstance().manageHeaderVisibitlity(false);*/
+        DashboardActivity.getInstance().changeMenuHeader("", false);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class FragmentProductsAccToSubCategory extends BaseFragment implements On
         context = getActivity();
         initViews(view);
         getBundle();
-        manageHeaderView();
+     //   manageHeaderView();
         getProducts();
         setListener();
     }

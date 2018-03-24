@@ -90,7 +90,8 @@ public class Splash extends AppCompatActivity implements ApiResponse {
     private void getHomeData() {
         try {
             if (AppUtils.isNetworkAvailable(context)) {
-
+                AppUtils.setLatitude(context, latitude);
+                AppUtils.setLongitude(context, longitude);
                 // http://stackmindz.com/dev/rationcart/api/category.php?lat=&lon=
                 String url = JsonApiHelper.BASEURL + JsonApiHelper.CATEGORIES + "lat=" + latitude + "&lon=" + longitude;
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbjectNoProgress(url, null, Request.Method.GET);

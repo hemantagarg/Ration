@@ -12,10 +12,13 @@ public interface JsonApiHelper {
     String TESTURL = "http://stackmindz.com/dev/rationcart/api/";
     String LOGIN = "login?";
     String REGISTER = "register?";
-    String FORGOT = "forgetPassword";
+    String FORGOT = "forget-password?";
+    String CHANGE_PASSWORD = "change-password?";
     String CATEGORIES = "category.php?";
     String ADD_ADDRESS = "addAddress?";
+    String UPDATE_PROFILE = "update-profile?";
     String CITY = "city";
+    String GET_PROFILE = "getProfile?";
     String GET_PINCODE = "getpincode?";
     String GET_ADDRESS = "getAddress?";
     String GET_ORDERS = "orderhistory?";

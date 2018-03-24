@@ -75,8 +75,9 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+     /*   DashboardActivity.getInstance().manageFooterVisibitlity(false);
+        DashboardActivity.getInstance().manageHeaderVisibitlity(false);*/
+        DashboardActivity.getInstance().changeMenuHeader("", false);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
         context = getActivity();
         initViews(view);
         getBundle();
-        manageHeaderView();
+        //   manageHeaderView();
         getProductDetail();
         setListener();
     }
@@ -142,6 +143,12 @@ public class FragmentProductsDetail extends BaseFragment implements OnCustomItem
 
 
     private void setListener() {
+        btn_checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentCartList(), true);
+            }
+        });
         rl_bottom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

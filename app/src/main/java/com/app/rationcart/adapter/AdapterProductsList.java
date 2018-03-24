@@ -47,12 +47,12 @@ public class AdapterProductsList extends RecyclerView.Adapter<RecyclerView.ViewH
 
         RecyclerView.ViewHolder vh;
         if (viewType == VIEW_ITEM) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(
+            View v = LayoutInflater.from(mContext).inflate(
                     R.layout.row_product_list, parent, false);
 
             vh = new CustomViewHolder(v);
         } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(
+            View v = LayoutInflater.from(mContext).inflate(
                     R.layout.progressbar_item, parent, false);
 
             vh = new ProgressViewHolder(v);

@@ -18,7 +18,6 @@ import com.app.rationcart.interfaces.ApiResponse;
 import com.app.rationcart.interfaces.JsonApiHelper;
 import com.app.rationcart.utils.AppUtils;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ForgotActivity extends AppCompatActivity implements ApiResponse {
@@ -74,15 +73,11 @@ public class ForgotActivity extends AppCompatActivity implements ApiResponse {
     private void forgotpasswordUser() {
 
         if (AppUtils.isNetworkAvailable(mActivity)) {
-
+            //     http://stackmindz.com/dev/rationcart/api/forget-password?mobile=amin@gmail.com
             try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("email", edtEmail.getText().toString());
-                jsonObject.put("action", "email");
-
-                String url = JsonApiHelper.BASEURL + JsonApiHelper.FORGOT;
-                new CommonAsyncTaskHashmap(1, mActivity, this).getqueryJsonbject(url, jsonObject, Request.Method.POST);
-            } catch (JSONException e) {
+                String url = JsonApiHelper.BASEURL + JsonApiHelper.FORGOT + "mobile=" + edtEmail.getText().toString();
+                new CommonAsyncTaskHashmap(1, mActivity, this).getqueryJsonbject(url, null, Request.Method.GET);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -106,11 +101,13 @@ public class ForgotActivity extends AppCompatActivity implements ApiResponse {
     public void onPostSuccess(int method, JSONObject response) {
         try {
             if (method == 1) {
-                if (response.getString("result").equalsIgnoreCase("1")) {
-                    Toast.makeText(mActivity, response.getString("data"), Toast.LENGTH_SHORT).show();
+                JSONObject commandResult = response
+                        .getJSONObject("commandResult");
+                if (commandResult.getString("success").equalsIgnoreCase("1")) {
+                    Toast.makeText(mActivity, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(mActivity, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (Exception e) {

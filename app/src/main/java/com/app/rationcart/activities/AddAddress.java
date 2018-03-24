@@ -38,10 +38,11 @@ public class AddAddress extends Activity implements ApiResponse {
     private ArrayList<String> cityListId = new ArrayList<>();
     private ArrayList<String> zipListNames = new ArrayList<>();
     private ArrayList<String> zipListId = new ArrayList<>();
-    private Spinner spinner_city,spinner_zipcode;
+    private Spinner spinner_city, spinner_zipcode;
     private ArrayAdapter<String> adapterCity;
     private ArrayAdapter<String> adapterzipcode;
-String SelctZipCode ="",SelectCityId="";
+    String SelctZipCode = "", SelectCityId = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,10 +109,14 @@ String SelctZipCode ="",SelectCityId="";
             @Override
             public void onClick(View v) {
                 if (isValidLoginDetails()) {
-                    if (spinner_city.getSelectedItemPosition() != 0) {
+                    if (spinner_city.getSelectedItemPosition() != 0 && spinner_zipcode.getSelectedItemPosition() != 0) {
                         saveAdddress();
                     } else {
-                        Toast.makeText(context, "Please select city", Toast.LENGTH_SHORT).show();
+                        if (spinner_city.getSelectedItemPosition() == 0) {
+                            Toast.makeText(context, "Please select city", Toast.LENGTH_SHORT).show();
+                        } else if (spinner_zipcode.getSelectedItemPosition() == 0) {
+                            Toast.makeText(context, "Please select zipcodes", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             }
@@ -175,11 +180,10 @@ String SelctZipCode ="",SelectCityId="";
         try {
             if (AppUtils.isNetworkAvailable(context)) {
                 String url = JsonApiHelper.BASEURL + JsonApiHelper.ADD_ADDRESS + "user_id=" + AppUtils.getUserId(context) + "&address="
-                        + txt_address1.getText().toString() + "&pincode=" + zipListId.get(selectedserviceposition)+ "&city_id=" + cityListId.get(selectedserviceposition)
-                        + txt_address1.getText().toString() + txt_address2.getText().toString() + "&pincode=" + txt_zipcode.getText().toString()
+                        + txt_address1.getText().toString() + txt_address2.getText().toString() + "&pincode=" + zipListId.get(selectedserviceposition) + "&city_id=" + cityListId.get(selectedserviceposition)
                         + "&email=" + mEtEmail.getText().toString() + "&mobile=" + txt_mobileno.getText().toString()
                         + "&fname=" + txt_name.getText().toString() + "&lname=" + txt_lastname.getText().toString()
-                        + "&token=" + AppUtils.getImeiNo(context)+"&city_id="+cityListId.get(spinner_city.getSelectedItemPosition());
+                        + "&token=" + AppUtils.getImeiNo(context);
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbjectNoProgress(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -209,7 +213,7 @@ String SelctZipCode ="",SelectCityId="";
             }/* else if (zipcode.length() < 6) {
                 isValidLoginDetails = false;
                 Toast.makeText(context, R.string.enter_valid_zipcode, Toast.LENGTH_SHORT).show();
-            } */else {
+            } */ else {
                 isValidLoginDetails = true;
             }
 

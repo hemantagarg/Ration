@@ -1,29 +1,32 @@
 package com.app.rationcart.activities;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.app.rationcart.R;
+import com.app.rationcart.aynctask.CommonAsyncTaskHashmap;
+import com.app.rationcart.fragment.BaseFragment;
 import com.app.rationcart.iclasses.HeaderViewManager;
+import com.app.rationcart.interfaces.ApiResponse;
 import com.app.rationcart.interfaces.HeaderViewClickListener;
-
+import com.app.rationcart.interfaces.JsonApiHelper;
+import com.app.rationcart.utils.AppUtils;
 
 import org.json.JSONObject;
-
-import java.util.HashMap;
 
 /**
  * Created by hemanta on 02-08-2017.
  */
 
-public class ChangePassword extends AppCompatActivity  {
+public class ChangePassword extends BaseFragment implements ApiResponse {
 
     public static ChangePassword changePassword;
     private Button btnSubmit;
@@ -31,14 +34,22 @@ public class ChangePassword extends AppCompatActivity  {
     private Activity mActivity;
     private View view;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
-        mActivity = ChangePassword.this;
-        init();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.content_change_password, container, false);
+        return view;
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mActivity = getActivity();
+        init(view);
         //  setListener();
-        manageHeaderView();
+        //    manageHeaderView();
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,7 +57,7 @@ public class ChangePassword extends AppCompatActivity  {
                 if (!edtold_password.getText().toString().equalsIgnoreCase("") && !edt_newpassword.getText().toString().equalsIgnoreCase("") && !edtconfirmpassword.getText().toString().equalsIgnoreCase("")) {
 
                     if (edt_newpassword.getText().toString().equals(edtconfirmpassword.getText().toString())) {
-                       // submitRequest();
+                        submitRequest();
                     } else {
                         Toast.makeText(mActivity, "Password does not match", Toast.LENGTH_SHORT).show();
                     }
@@ -101,35 +112,30 @@ public class ChangePassword extends AppCompatActivity  {
         };
     }
 
- /*   public void submitRequest() {
+    public void submitRequest() {
 
         if (AppUtils.isNetworkAvailable(mActivity)) {
 
-            HashMap<String, String> hm = new HashMap<>();
-            // user_id,leave_type_id,leave_date_from,leave_date_to, latitude,longitude,location,remark
-            hm.put("user_id", AppUtils.getUserId(mActivity));
-            hm.put("current_pwd", edtold_password.getText().toString());
-            hm.put("new_pwd", edt_newpassword.getText().toString());
-            hm.put("confirm_pwd", edtconfirmpassword.getText().toString());
-
-            //  http://dev.stackmindz.com/sky/api/apply-leave
-            String url = JsonApiHelper.BASEURL + JsonApiHelper.CHNAGE_PASSWORD;
-            new CommonAsyncTask(1, mActivity, this).getqueryJson(url, hm, Request.Method.POST);
-
+            //http://stackmindz.com/dev/rationcart/api/change-password?
+            // user_id=12&current_pwd=123456&new_pwd=12345&confirm_pwd=12345
+            String url = JsonApiHelper.BASEURL + JsonApiHelper.CHANGE_PASSWORD + "user_id=" +
+                    AppUtils.getUserId(mActivity) + "&new_pwd=" + edt_newpassword.getText().toString()
+                    + "&current_pwd=" + edt_newpassword.getText().toString() + "&confirm_pwd=" + edtconfirmpassword.getText().toString();
+            new CommonAsyncTaskHashmap(1, mActivity, this).getqueryJsonbject(url, null, Request.Method.GET);
 
         } else {
             Toast.makeText(mActivity, mActivity.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
         }
 
-    }*/
+    }
 
 
-    private void init() {
+    private void init(View view) {
 
-        edtold_password = (EditText) findViewById(R.id.edtold_password);
-        edt_newpassword = (EditText) findViewById(R.id.edt_newpassword);
-        edtconfirmpassword = (EditText) findViewById(R.id.edtconfirmpassword);
-        btnSubmit = (Button) findViewById(R.id.btnSubmit);
+        edtold_password = view.findViewById(R.id.edtold_password);
+        edt_newpassword = view.findViewById(R.id.edt_newpassword);
+        edtconfirmpassword = view.findViewById(R.id.edtconfirmpassword);
+        btnSubmit = view.findViewById(R.id.btnSubmit);
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +144,7 @@ public class ChangePassword extends AppCompatActivity  {
                 if (!edtold_password.getText().toString().equalsIgnoreCase("") && !edt_newpassword.getText().toString().equalsIgnoreCase("") && !edtconfirmpassword.getText().toString().equalsIgnoreCase("")) {
 
                     if (edt_newpassword.getText().toString().equals(edtconfirmpassword.getText().toString())) {
-                      //  submitRequest();
+                        //  submitRequest();
                     } else {
                         Toast.makeText(mActivity, "Password does not match", Toast.LENGTH_SHORT).show();
                     }
@@ -161,34 +167,28 @@ public class ChangePassword extends AppCompatActivity  {
 
     }
 
-   /* @Override
+    @Override
     public void onPostSuccess(int method, JSONObject response) {
-
         try {
             if (method == 1) {
-                if (response.getString("status").equalsIgnoreCase("1")) {
-
-                    Toast.makeText(mActivity, response.getString("message"), Toast.LENGTH_SHORT).show();
-                    AppUtils.setUserId(mActivity, "");
-                    Intent intent = new Intent(mActivity, LoginActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                JSONObject commandResult = response
+                        .getJSONObject("commandResult");
+                if (commandResult.getString("success").equalsIgnoreCase("1")) {
+                    Toast.makeText(mActivity, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
+                    mActivity.onBackPressed();
                 } else {
-                    Toast.makeText(mActivity, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, commandResult.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
     public void onPostFail(int method, String response) {
 
-    }*/
-
+    }
 }
 
 

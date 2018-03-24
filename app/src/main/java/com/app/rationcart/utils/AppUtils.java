@@ -155,6 +155,36 @@ public class AppUtils {
         return "";
     }
 
+
+    public static void setLoction(Context context, String image) {
+
+        try {
+            SharedPreferences preferences = PreferenceManager
+                    .getDefaultSharedPreferences(context);
+            SharedPreferences.Editor editor = preferences.edit();
+
+            editor.putString("location", image);
+
+            editor.commit();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static String getLoction(Context context) {
+
+        try {
+            SharedPreferences preferences = PreferenceManager
+                    .getDefaultSharedPreferences(context);
+            return preferences.getString("location", "");
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     public static void setImeiNo(Context context, String image) {
 
         try {
@@ -184,14 +214,14 @@ public class AppUtils {
         return "";
     }
 
-    public static void setLoginUserAvtarId(Context context, String image) {
+    public static void setLongitude(Context context, String image) {
 
         try {
             SharedPreferences preferences = PreferenceManager
                     .getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = preferences.edit();
 
-            editor.putString("login_avtar_id", image);
+            editor.putString("Longitude", image);
 
             editor.commit();
         } catch (Exception e) {
@@ -200,12 +230,12 @@ public class AppUtils {
         }
     }
 
-    public static String getLoginUserAvtarId(Context context) {
+    public static String getLongitude(Context context) {
 
         try {
             SharedPreferences preferences = PreferenceManager
                     .getDefaultSharedPreferences(context);
-            return preferences.getString("login_avtar_id", "");
+            return preferences.getString("Longitude", "");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -213,14 +243,14 @@ public class AppUtils {
         return "";
     }
 
-    public static void setTeamList(Context context, String image) {
+    public static void setLatitude(Context context, String image) {
 
         try {
             SharedPreferences preferences = PreferenceManager
                     .getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = preferences.edit();
 
-            editor.putString("team_list", image);
+            editor.putString("Latitude", image);
 
             editor.commit();
         } catch (Exception e) {
@@ -229,12 +259,12 @@ public class AppUtils {
         }
     }
 
-    public static String getTeamList(Context context) {
+    public static String getLatitude(Context context) {
 
         try {
             SharedPreferences preferences = PreferenceManager
                     .getDefaultSharedPreferences(context);
-            return preferences.getString("team_list", "");
+            return preferences.getString("Latitude", "");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -9,6 +9,7 @@
 
     <include
         android:id="@+id/header_layout"
+        android:visibility="gone"
         layout="@layout/header_layout" />
 
     <android.support.v7.widget.RecyclerView
@@ -16,6 +17,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header_layout" />
+
+
+    <TextView android:id="@+id/mTvNoProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:padding="@dimen/dp10"
+        android:text="No Orders Found"
+        android:visibility="visible"
+        android:textColor="@color/textcolordark"
+        android:textSize="@dimen/text_size_14" />
 
 
 </RelativeLayout>

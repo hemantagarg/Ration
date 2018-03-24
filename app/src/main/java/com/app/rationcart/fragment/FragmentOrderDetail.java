@@ -52,8 +52,9 @@ public class FragmentOrderDetail extends BaseFragment implements OnCustomItemCli
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+        //  DashboardActivity.getInstance().manageFooterVisibitlity(false);
+        //  DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+        DashboardActivity.getInstance().changeMenuHeader("Order Detail", false);
     }
 
     @Override
@@ -70,7 +71,7 @@ public class FragmentOrderDetail extends BaseFragment implements OnCustomItemCli
         context = getActivity();
         initViews(view);
         getBundle();
-        manageHeaderView();
+        //manageHeaderView();
         setListener();
         getOrders();
     }

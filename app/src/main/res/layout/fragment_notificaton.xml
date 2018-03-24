@@ -8,6 +8,7 @@
 
     <include
         android:id="@+id/header"
+        android:visibility="gone"
         layout="@layout/header_layout" />
 
 

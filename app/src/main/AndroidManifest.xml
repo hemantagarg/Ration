@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+        android:name="com.app.sportzfever.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
 
     <application
         android:name=".utils.MyApplication"
@@ -28,6 +32,10 @@
             </intent-filter>
         </service>
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBrsAH6nosjjZSNMnEGBs5ymo9MkvBm1ks" />
+
         <activity
             android:name=".activities.Splash"
             android:theme="@style/AppTheme.NoActionBar">
@@ -37,11 +45,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activities.PickLocation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+
         <activity
             android:name=".activities.DashboardActivity"
             android:label="@string/title_activity_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_dashboard"
@@ -55,12 +71,6 @@
         <activity
             android:name=".activities.ForgotActivity"
             android:label="@string/title_activity_dashboard"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity
-            android:name=".activities.ChangePassword"
-            android:label="@string/change_password"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

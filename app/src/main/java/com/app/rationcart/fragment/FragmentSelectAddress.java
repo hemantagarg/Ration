@@ -52,6 +52,7 @@ public class FragmentSelectAddress extends BaseFragment implements OnCustomItemC
     private int selectedAddressPosition = 0;
     private String finalquantity = "";
     private String totalPrice = "";
+    private boolean isCheckout = true;
 
     public static FragmentSelectAddress getInstance() {
         if (fragmentHome == null)
@@ -127,6 +128,15 @@ public class FragmentSelectAddress extends BaseFragment implements OnCustomItemC
             totalPrice = b.getString("price");
             finalquantity = b.getString("finalquantity");
             mTvTotalAmount.setText(totalPrice);
+
+            if (b.containsKey("isCheckout")) {
+                isCheckout = b.getBoolean("isCheckout");
+            }
+            if (!isCheckout) {
+                rl_bottom.setVisibility(View.GONE);
+            } else {
+                rl_bottom.setVisibility(View.VISIBLE);
+            }
         }
     }
 

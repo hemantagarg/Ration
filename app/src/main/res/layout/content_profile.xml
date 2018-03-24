@@ -9,7 +9,8 @@
 
     <include
         android:id="@+id/header"
-        layout="@layout/header_layout" />
+        layout="@layout/header_layout"
+        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -176,7 +177,7 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:layout_marginTop="@dimen/dp5">
 
                 <EditText
                     android:id="@+id/add_zipcode"
@@ -184,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Zipcode"
                     android:inputType="phone"
-                    android:maxLength="6"
+                    android:maxLength="5"
                     android:maxLines="2"
                     android:padding="@dimen/dp10"
                     android:textColor="@color/textcolordark"
@@ -192,20 +193,7 @@
                     android:textSize="@dimen/text_size_14" />
 
             </android.support.design.widget.TextInputLayout>
-            <Spinner
-                android:id="@+id/spinner_zipcode"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="@dimen/dp5"
-                android:layout_marginRight="@dimen/dp5"
-                android:layout_marginTop="@dimen/dp10" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp1"
-                android:layout_marginLeft="@dimen/dp5"
-                android:layout_marginRight="@dimen/dp5"
-                android:background="@color/text_hint_color" />
         </LinearLayout>
     </ScrollView>
 

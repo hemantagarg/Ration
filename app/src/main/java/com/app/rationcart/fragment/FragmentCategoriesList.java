@@ -54,6 +54,7 @@ public class FragmentCategoriesList extends BaseFragment {
         super.onResume();
         DashboardActivity.getInstance().manageFooterVisibitlity(true);
         DashboardActivity.getInstance().manageHeaderVisibitlity(true);
+        DashboardActivity.getInstance().changeMenuHeader("Categories", false);
     }
 
     @Override

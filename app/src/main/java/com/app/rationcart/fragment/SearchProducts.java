@@ -57,8 +57,9 @@ public class SearchProducts extends BaseFragment implements OnCustomItemClicList
     @Override
     public void onResume() {
         super.onResume();
-        DashboardActivity.getInstance().manageHeaderVisibitlity(false);
-        DashboardActivity.getInstance().manageFooterVisibitlity(false);
+      /*  DashboardActivity.getInstance().manageHeaderVisibitlity(false);
+        DashboardActivity.getInstance().manageFooterVisibitlity(false);*/
+        DashboardActivity.getInstance().changeMenuHeader("Search Product", false);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class SearchProducts extends BaseFragment implements OnCustomItemClicList
         context = getActivity();
         initViews(view);
         getBundle();
-        manageHeaderView();
+      //  manageHeaderView();
         setListener();
     }
 

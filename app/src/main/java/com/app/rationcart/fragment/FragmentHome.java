@@ -62,6 +62,7 @@ public class FragmentHome extends BaseFragment implements OnCustomItemClicListen
         super.onResume();
         DashboardActivity.getInstance().manageFooterVisibitlity(true);
         DashboardActivity.getInstance().manageHeaderVisibitlity(true);
+        DashboardActivity.getInstance().changeMenuHeader("Your Location", true);
         //  pagerMove();
     }
 

@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -58,7 +59,7 @@ import java.util.Stack;
 public class DashboardActivity extends AppCompatActivity {
 
     private RelativeLayout rl_top;
-    private TextView mTvUserName, mTvHome, mTvAccount, mTvCategoies, mTvOffers,mTvDeliveryAdd, mTVNotifications, mTVShare, mTVRate;
+    private TextView mTvUserName, mTvHome, mTvAccount, mTvCategoies, mTvOffers, mTVNotifications, mTVShare, mTVRate;
     private ExpandableListView expendableView;
     private ScrollView mScrollview;
     private Animation anim;
@@ -76,13 +77,15 @@ public class DashboardActivity extends AppCompatActivity {
     private static DashboardActivity mInstance;
     private LinearLayout ll_bottom;
     private String mCurrentTab;
-    private RelativeLayout rl_home, rl_category, rl_search, rl_offers, rl_cart;
+    private RelativeLayout rl_home, rl_category, rl_search, rl_offers, rl_cart, rlLocationMain;
     private ImageView image_home, image_category, image_search, image_offer, image_cart;
     private TextView text_home, text_category, text_search, text_offer,
             text_cart, mTvLogin, mTVLogout, mTvOrderHistory, mTvAddress, mTChangePassword, mTvLocation,
             mTvHeading, mTvLocation1;
     private ImageView mIvEdit, mIvEdit1;
     private DrawerLayout drawer;
+    private Button btn_choose_location;
+
 
     /***********************************************
      * Function Name : getInstance
@@ -112,7 +115,11 @@ public class DashboardActivity extends AppCompatActivity {
         mStacks.put(GlobalConstants.TAB_CART_BAR, new Stack<Fragment>());
         pushFragments(GlobalConstants.TAB_HOME_BAR, new FragmentHome(), true);
 
+
         setData();
+        if (AppUtils.getLoction(context).equalsIgnoreCase("")) {
+            rlLocationMain.setVisibility(View.VISIBLE);
+        }
         setListener();
     }
 
@@ -155,7 +162,6 @@ public class DashboardActivity extends AppCompatActivity {
         mTvAccount = (TextView) findViewById(R.id.mTvAccount);
         mTvCategoies = (TextView) findViewById(R.id.mTvCategoies);
         mTvOffers = (TextView) findViewById(R.id.mTvOffers);
-        mTvDeliveryAdd = (TextView) findViewById(R.id.mTvDeliveryAdd);
         mTVNotifications = (TextView) findViewById(R.id.mTVNotifications);
         mTVShare = (TextView) findViewById(R.id.mTVShare);
         mTvLocation = (TextView) findViewById(R.id.mTvLocation);
@@ -180,13 +186,14 @@ public class DashboardActivity extends AppCompatActivity {
         rl_category = (RelativeLayout) findViewById(R.id.rl_category);
         rl_search = (RelativeLayout) findViewById(R.id.rl_search);
         rl_cart = (RelativeLayout) findViewById(R.id.rl_cart);
+        rlLocationMain = (RelativeLayout) findViewById(R.id.rlLocationMain);
         rl_offers = (RelativeLayout) findViewById(R.id.rl_offers);
         image_home = (ImageView) findViewById(R.id.image_home);
         image_category = (ImageView) findViewById(R.id.image_category);
         image_search = (ImageView) findViewById(R.id.image_search);
         image_cart = (ImageView) findViewById(R.id.image_cart);
         image_offer = (ImageView) findViewById(R.id.image_offer);
-
+        btn_choose_location = (Button) findViewById(R.id.btn_choose_location);
         text_home = (TextView) findViewById(R.id.text_home);
         text_category = (TextView) findViewById(R.id.text_category);
         text_search = (TextView) findViewById(R.id.text_search);
@@ -207,11 +214,11 @@ public class DashboardActivity extends AppCompatActivity {
         image_home.setImageResource(R.drawable.home_grey);
         image_search.setImageResource(R.drawable.search_grey);
 
-        text_home.setTextColor(ContextCompat.getColor(context,R.color.textcolordark));
-        text_cart.setTextColor(ContextCompat.getColor(context,R.color.textcolordark));
-        text_category.setTextColor(ContextCompat.getColor(context,R.color.textcolordark));
-        text_offer.setTextColor(ContextCompat.getColor(context,R.color.textcolordark));
-        text_search.setTextColor(ContextCompat.getColor(context,R.color.textcolordark));
+        text_home.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_cart.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_category.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_offer.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_search.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
     }
 
 
@@ -307,6 +314,25 @@ public class DashboardActivity extends AppCompatActivity {
 
             }
         });
+        btn_choose_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, PickLocation.class);
+                i.putExtra("lat", AppUtils.getLatitude(context));
+                i.putExtra("lng", AppUtils.getLongitude(context));
+                startActivityForResult(i, 511);
+                drawer.closeDrawer(GravityCompat.START);
+                rlLocationMain.setVisibility(View.GONE);
+
+            }
+        });
+        rlLocationMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlLocationMain.setVisibility(View.GONE);
+            }
+        });
+
 
         mTVLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,12 +397,6 @@ public class DashboardActivity extends AppCompatActivity {
                 pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentNotification(), true);
                 drawer.closeDrawer(GravityCompat.START);
             }
-        }); mTvDeliveryAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pushFragments(AppConstant.CURRENT_SELECTED_TAB, new FragmentSelectAddress(), true);
-                drawer.closeDrawer(GravityCompat.START);
-            }
         });
         mTvLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -431,7 +451,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_home.setImageResource(R.drawable.home_orange);
-                text_home.setTextColor(ContextCompat.getColor(context,R.color.red));
+                text_home.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_HOME_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome))
                         AppUtils.showErrorLog(TAG, "Home clicked");
@@ -448,7 +468,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_offer.setImageResource(R.drawable.offer_orange);
-                text_offer.setTextColor(ContextCompat.getColor(context,R.color.red));
+                text_offer.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_OFFERS_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof Offers))
                         AppUtils.showErrorLog(TAG, "Offer clicked");
@@ -466,7 +486,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_category.setImageResource(R.drawable.category_orange);
-                text_category.setTextColor(ContextCompat.getColor(context,R.color.red));
+                text_category.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_CATEGORIES_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList))
                         AppUtils.showErrorLog(TAG, "Category clicked");
@@ -483,7 +503,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_search.setImageResource(R.drawable.search_orange);
-                text_search.setTextColor(ContextCompat.getColor(context,R.color.red));
+                text_search.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_SEARCH_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof SearchProducts))
                         AppUtils.showErrorLog(TAG, "search clicked");
@@ -500,7 +520,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_cart.setImageResource(R.drawable.cart_orange);
-                text_cart.setTextColor(ContextCompat.getColor(context,R.color.red));
+                text_cart.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_CART_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentCartList))
                         AppUtils.showErrorLog(TAG, "cart clicked");

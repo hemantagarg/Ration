@@ -386,8 +386,6 @@
                 android:id="@+id/linear4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/layout_bottom"
-                android:layout_below="@+id/linear3"
                 android:layout_marginLeft="@dimen/dp5"
                 android:layout_marginRight="@dimen/dp5"
                 android:layout_marginTop="@dimen/dp10"
@@ -490,17 +488,17 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:visibility="gone"
                         android:layout_marginRight="@dimen/dp10"
                         android:padding="@dimen/dp5"
-                        android:src="@drawable/non_selected" />
+                        android:src="@drawable/non_selected"
+                        android:visibility="gone" />
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginBottom="@dimen/dp10">
+                    android:layout_marginBottom="@dimen/dp10"
+                    android:visibility="gone">
 
 
                     <TextView
@@ -526,8 +524,63 @@
                         android:src="@drawable/non_selected" />
                 </RelativeLayout>
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp5"
+                android:layout_marginRight="@dimen/dp5"
+                android:layout_marginTop="@dimen/dp10"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/delivery_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginTop="@dimen/dp10"
+                    android:padding="@dimen/dp5"
+                    android:text="Delivery Mode"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/text_size_14" />
+
+
+                <RadioGroup
+                    android:id="@+id/radiogrp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp10"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <RadioButton
+                        android:id="@+id/radioPickup"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="Pick up"
+                        android:textColor="@color/textcolordark"
+                        android:textSize="@dimen/text_size_14" />
+
+                    <RadioButton
+                        android:id="@+id/radioDelivery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Home Delivery"
+                        android:textColor="@color/textcolordark"
+                        android:textSize="@dimen/text_size_14" />
+
+                </RadioGroup>
+
 
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

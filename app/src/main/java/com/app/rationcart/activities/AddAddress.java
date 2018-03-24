@@ -268,7 +268,8 @@ public class AddAddress extends Activity implements ApiResponse {
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
                     JSONObject data = commandResult.getJSONObject("data");
                     JSONArray cities = data.getJSONArray("cities");
-
+                    cityListId.clear();
+                    cityListNames.clear();
                     cityListId.add("-1");
                     cityListNames.add("Select City");
                     for (int i = 0; i < cities.length(); i++) {
@@ -285,8 +286,10 @@ public class AddAddress extends Activity implements ApiResponse {
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
                     JSONObject data = commandResult.getJSONObject("data");
                     JSONArray cities = data.getJSONArray("pincode");
+                    zipListId.clear();
+                    zipListNames.clear();
                     zipListId.add("-1");
-                    cityListNames.add("Select Zipcode");
+                    zipListNames.add("Select Zipcode");
                     for (int i = 0; i < cities.length(); i++) {
                         JSONObject jo = cities.getJSONObject(i);
                         zipListId.add(jo.getString("id"));

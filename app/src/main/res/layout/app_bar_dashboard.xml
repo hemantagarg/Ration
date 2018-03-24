@@ -59,6 +59,72 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <include layout="@layout/content_dashboard" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/content_dashboard" />
+
+        <RelativeLayout
+            android:id="@+id/rlLocationMain"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#55666666"
+            android:visibility="gone">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:padding="@dimen/dp10"
+                    android:text="Welcome to Ration Cart"
+                    android:textColor="@color/textcolordark"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp1"
+                    android:background="@color/view_color" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="@dimen/dp20"
+                    android:layout_marginRight="@dimen/dp20"
+                    android:gravity="center"
+                    android:padding="@dimen/dp10"
+                    android:text="Product catalogue and offers are location specific"
+                    android:textColor="@color/textcolordark"
+                    android:textSize="@dimen/text_size_14" />
+
+
+                <Button
+                    android:id="@+id/btn_choose_location"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/dp20"
+                    android:background="@color/textcolordark"
+                    android:text="Choose Location"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_15" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
 
 </LinearLayout>

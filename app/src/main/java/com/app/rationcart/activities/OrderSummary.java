@@ -3,11 +3,14 @@ package com.app.rationcart.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,9 +52,11 @@ public class OrderSummary extends Activity implements ApiResponse, OnCustomItemC
     private int paymentMode = 0;
     private JSONObject commandResult;
     private ArrayList<HashMap<String, String>> transactionDetail;
-    private String paymentModeKey = "";
+    private String paymentModeKey = "", selectedDeliveryType = "1";
     private boolean isCouponApplied;
     private int mYear, mMonth, mDay;
+    private RadioGroup radiogrp;
+    private RadioButton radioDelivery, radioPickup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +144,9 @@ public class OrderSummary extends Activity implements ApiResponse, OnCustomItemC
         card_ondelivery = findViewById(R.id.bubble5);
         cash_ondelivery = findViewById(R.id.bubble4);
         rl_checkout = findViewById(R.id.layout_bottom);
+        radioDelivery = findViewById(R.id.radioDelivery);
+        radiogrp = findViewById(R.id.radiogrp);
+        radioPickup = findViewById(R.id.radioPickup);
         manageHeaderView();
 
     }
@@ -183,6 +191,20 @@ public class OrderSummary extends Activity implements ApiResponse, OnCustomItemC
             @Override
             public void onClick(View v) {
                 //  showDatePicker(1);
+            }
+        });
+
+        radiogrp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioDelivery:
+                        selectedDeliveryType = "2";
+                        break;
+                    case R.id.radioPickup:
+                        selectedDeliveryType = "1";
+                        break;
+                }
             }
         });
         rl_checkout.setOnClickListener(new View.OnClickListener() {
@@ -264,11 +286,8 @@ public class OrderSummary extends Activity implements ApiResponse, OnCustomItemC
         paytm_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 paymentMode = 4;
                 getPaymentMode();
-
-
             }
         });
 
@@ -290,7 +309,7 @@ public class OrderSummary extends Activity implements ApiResponse, OnCustomItemC
                 // &token=355241080144570&total_amount=408&quantity=5&address_id=8
                 String url = JsonApiHelper.BASEURL + JsonApiHelper.PLACE_ORDER + "token=" + AppUtils.getImeiNo(context)
                         + "&user_id=" + AppUtils.getUserId(context) + "&total_amount="
-                        + grand_total + "&quantity=" + total_quantity + "&address_id=" + addressid;
+                        + grand_total + "&quantity=" + total_quantity + "&address_id=" + addressid + "&deliveryType=" + selectedDeliveryType;
                 new CommonAsyncTaskHashmap(1, context, this).getqueryJsonbject(url, null, Request.Method.GET);
             } else {
                 Toast.makeText(context, context.getResources().getString(R.string.message_network_problem), Toast.LENGTH_SHORT).show();
@@ -479,7 +498,7 @@ public class OrderSummary extends Activity implements ApiResponse, OnCustomItemC
                         .getJSONObject("commandResult");
                 if (commandResult.getString("success").equalsIgnoreCase("1")) {
 
-                 //   JSONArray data = commandResult.getJSONArray("data");
+                    //   JSONArray data = commandResult.getJSONArray("data");
 
                     Toast.makeText(context, "Your Order placed succesfully", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, DashboardActivity.class);

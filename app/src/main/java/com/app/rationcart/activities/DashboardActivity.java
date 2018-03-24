@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,7 +36,6 @@ import com.app.rationcart.fragment.FragmentNotification;
 import com.app.rationcart.fragment.FragmentOrderHistory;
 import com.app.rationcart.fragment.FragmentProductsAccToCategory;
 import com.app.rationcart.fragment.FragmentProductsAccToSubCategory;
-import com.app.rationcart.fragment.FragmentProductsDetail;
 import com.app.rationcart.fragment.FragmentSelectAddress;
 import com.app.rationcart.fragment.Offers;
 import com.app.rationcart.fragment.SearchProducts;
@@ -205,11 +205,11 @@ public class DashboardActivity extends AppCompatActivity {
         image_home.setImageResource(R.drawable.home_grey);
         image_search.setImageResource(R.drawable.search_grey);
 
-        text_home.setTextColor(getResources().getColor(R.color.textcolordark));
-        text_cart.setTextColor(getResources().getColor(R.color.textcolordark));
-        text_category.setTextColor(getResources().getColor(R.color.textcolordark));
-        text_offer.setTextColor(getResources().getColor(R.color.textcolordark));
-        text_search.setTextColor(getResources().getColor(R.color.textcolordark));
+        text_home.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_cart.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_category.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_offer.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
+        text_search.setTextColor(ContextCompat.getColor(context, R.color.textcolordark));
     }
 
 
@@ -294,6 +294,17 @@ public class DashboardActivity extends AppCompatActivity {
 
             }
         });
+        mTvLocation1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, PickLocation.class);
+                i.putExtra("lat", AppUtils.getLatitude(context));
+                i.putExtra("lng", AppUtils.getLongitude(context));
+                startActivityForResult(i, 511);
+                drawer.closeDrawer(GravityCompat.START);
+
+            }
+        });
 
         mTVLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -333,8 +344,14 @@ public class DashboardActivity extends AppCompatActivity {
         mTvAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, AddAddress.class);
-                startActivity(intent);
+                FragmentSelectAddress fragmentSelectAddress = new FragmentSelectAddress();
+                Bundle bundle = new Bundle();
+                bundle.putString("price", "");
+                bundle.putString("finalquantity", "");
+                bundle.putBoolean("isCheckout", false);
+                fragmentSelectAddress.setArguments(bundle);
+                DashboardActivity.getInstance().pushFragments(AppConstant.CURRENT_SELECTED_TAB, fragmentSelectAddress, true);
+
                 drawer.closeDrawer(GravityCompat.START);
             }
         });
@@ -406,7 +423,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_home.setImageResource(R.drawable.home_orange);
-                text_home.setTextColor(getResources().getColor(R.color.red));
+                text_home.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_HOME_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentHome))
                         AppUtils.showErrorLog(TAG, "Home clicked");
@@ -423,7 +440,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_offer.setImageResource(R.drawable.offer_orange);
-                text_offer.setTextColor(getResources().getColor(R.color.red));
+                text_offer.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_OFFERS_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof Offers))
                         AppUtils.showErrorLog(TAG, "Offer clicked");
@@ -441,7 +458,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_category.setImageResource(R.drawable.category_orange);
-                text_category.setTextColor(getResources().getColor(R.color.red));
+                text_category.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_CATEGORIES_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentCategoriesList))
                         AppUtils.showErrorLog(TAG, "Category clicked");
@@ -458,7 +475,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_search.setImageResource(R.drawable.search_orange);
-                text_search.setTextColor(getResources().getColor(R.color.red));
+                text_search.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_SEARCH_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof SearchProducts))
                         AppUtils.showErrorLog(TAG, "search clicked");
@@ -475,7 +492,7 @@ public class DashboardActivity extends AppCompatActivity {
             public void onClick(View view) {
                 unSelectImages();
                 image_cart.setImageResource(R.drawable.cart_orange);
-                text_cart.setTextColor(getResources().getColor(R.color.red));
+                text_cart.setTextColor(ContextCompat.getColor(context, R.color.red));
                 if (mStacks.get(GlobalConstants.TAB_CART_BAR).size() > 0) {
                     if (!(mStacks.get(mCurrentTab).lastElement() instanceof FragmentCartList))
                         AppUtils.showErrorLog(TAG, "cart clicked");
@@ -683,34 +700,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void refreshFragments() {
-        if (currentFragment instanceof FragmentSelectAddress) {
-            ((FragmentSelectAddress) currentFragment).onResume();
-        }
-        if (currentFragment instanceof FragmentCartList) {
-            ((FragmentCartList) currentFragment).onResume();
-        }
-        if (currentFragment instanceof FragmentHome) {
-            ((FragmentHome) currentFragment).onResume();
-        }
-        if (currentFragment instanceof Offers) {
-            ((Offers) currentFragment).onResume();
-        }
-
-        if (currentFragment instanceof SearchProducts) {
-            ((SearchProducts) currentFragment).onResume();
-        }
-        if (currentFragment instanceof FragmentCategoriesList) {
-            ((FragmentCategoriesList) currentFragment).onResume();
-        }
-        if (currentFragment instanceof FragmentProductsAccToCategory) {
-            ((FragmentProductsAccToCategory) currentFragment).onResume();
-        }
-        if (currentFragment instanceof FragmentProductsAccToSubCategory) {
-            ((FragmentProductsAccToSubCategory) currentFragment).onResume();
-        }
-        if (currentFragment instanceof FragmentProductsDetail) {
-            ((FragmentProductsDetail) currentFragment).onResume();
-        }
+        currentFragment.onResume();
     }
 
     private void refreshCartFragments() {

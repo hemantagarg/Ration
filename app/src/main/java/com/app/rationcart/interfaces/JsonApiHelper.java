@@ -17,6 +17,7 @@ public interface JsonApiHelper {
     String CATEGORIES = "category.php?";
     String ADD_ADDRESS = "addAddress?";
     String UPDATE_PROFILE = "update-profile?";
+    String CUSTOMERENQ = "addUserdata?";
     String CITY = "city";
     String GET_PROFILE = "getProfile?";
     String GET_PINCODE = "getpincode?";

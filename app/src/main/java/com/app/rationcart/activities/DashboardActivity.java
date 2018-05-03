@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.app.rationcart.R;
 import com.app.rationcart.adapter.DrawerListAdapter;
 import com.app.rationcart.fragment.BaseFragment;
+import com.app.rationcart.fragment.EnquiryForm;
 import com.app.rationcart.fragment.FragmentCartList;
 import com.app.rationcart.fragment.FragmentCategoriesList;
 import com.app.rationcart.fragment.FragmentHome;
@@ -81,7 +82,7 @@ public class DashboardActivity extends AppCompatActivity {
     private ImageView image_home, image_category, image_search, image_offer, image_cart;
     private TextView text_home, text_category, text_search, text_offer,
             text_cart, mTvLogin, mTVLogout, mTvOrderHistory, mTvAddress, mTChangePassword, mTvLocation,
-            mTvHeading, mTvLocation1;
+            mTvHeading, mTvLocation1,mTVcustomerform;
     private ImageView mIvEdit, mIvEdit1;
     private DrawerLayout drawer;
     private Button btn_choose_location;
@@ -199,6 +200,7 @@ public class DashboardActivity extends AppCompatActivity {
         text_search = (TextView) findViewById(R.id.text_search);
         text_offer = (TextView) findViewById(R.id.text_offer);
         text_cart = (TextView) findViewById(R.id.text_cart);
+        mTVcustomerform = (TextView) findViewById(R.id.mTVcustomerform);
         mTvLogin = (TextView) findViewById(R.id.mTvLogin);
         mTVLogout = (TextView) findViewById(R.id.mTVLogout);
         mTvOrderHistory = (TextView) findViewById(R.id.mTvOrderHistory);
@@ -278,6 +280,14 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showCategoryAnimation();
+            }
+        });
+        mTVcustomerform.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pushFragments(AppConstant.CURRENT_SELECTED_TAB, new EnquiryForm(), true);
+                drawer.closeDrawer(GravityCompat.START);
+
             }
         });
 

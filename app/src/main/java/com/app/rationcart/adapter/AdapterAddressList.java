@@ -76,7 +76,7 @@ public class AdapterAddressList extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             ((CustomViewHolder) holder).text_address.setText(m1.getAddress());
             ((CustomViewHolder) holder).mobilenumber.setText(m1.getMobileno());
-            ((CustomViewHolder) holder).text_name.setText(m1.getName() + "  " + m1.getMobileno());
+            ((CustomViewHolder) holder).text_name.setText(m1.getName());
             ((CustomViewHolder) holder).text_zipcode.setText(m1.getCity() + "  " + m1.getZipcode());
             if (m1.getSelection_position() == 1) {
                 ((CustomViewHolder) holder).radio_button.setImageResource(R.drawable.selected);

@@ -73,10 +73,11 @@ public class AdapterOderList extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             ModelOrderDetail m1 = detail.get(position);
 
-            ((CustomViewHolder) holder).order_name.setText(m1.getFname());
-            ((CustomViewHolder) holder).order_status.setText(m1.getStatus());
-            ((CustomViewHolder) holder).text_total.setText(m1.getTotal_amount());
-            ((CustomViewHolder) holder).order_date.setText(m1.getEmail() + " " + m1.getMobile());
+           // ((CustomViewHolder) holder).order_name.setText(m1.getFname());
+            ((CustomViewHolder) holder).order_id.setText("Order Id"+": "+m1.getOrderId());
+            ((CustomViewHolder) holder).order_status.setText("Delivery Status"+": "+m1.getStatus());
+            ((CustomViewHolder) holder).text_total.setText("Total Amount"+": "+m1.getTotal_amount());
+            ((CustomViewHolder) holder).order_name.setText("Name"+": "+m1.getFname() + " " + m1.getLname());
 
         } else {
             ((ProgressViewHolder) holder).progressBar.setIndeterminate(true);
